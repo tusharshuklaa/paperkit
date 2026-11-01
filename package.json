@@ -1,0 +1,31 @@
+{
+  "name": "paperkit",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "check-types": "turbo run check-types",
+    "lint": "biome lint .",
+    "format": "biome format .",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "turbo": "^2.11.10"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "bun",
+      "version": "1.4.4"
+    }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@parcel/watcher"
+  ]
+}
