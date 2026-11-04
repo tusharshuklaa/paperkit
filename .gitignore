@@ -29,3 +29,6 @@ bun.lock
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Reference material
+/reference
