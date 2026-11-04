@@ -1,0 +1,6 @@
+# Exclude docs: code-only extraction needs no API key
+*.md
+*.hbs
+*.json.hbs
+scripts/
+
