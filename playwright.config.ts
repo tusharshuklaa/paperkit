@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3102';
+
 export default defineConfig({
   testDir: './apps/web/__tests__',
   testMatch: '**/__tests__/shell.test.ts',
@@ -9,7 +11,7 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   outputDir: 'test-results',
   use: {
-    baseURL: 'http://127.0.0.1:3102',
+    baseURL,
     browserName: 'chromium',
     trace: 'retain-on-failure',
   },
@@ -24,7 +26,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'bun run --cwd apps/web start --port 3102',
-    url: 'http://127.0.0.1:3102',
+    url: baseURL,
     reuseExistingServer: true,
     timeout: 120_000,
   },

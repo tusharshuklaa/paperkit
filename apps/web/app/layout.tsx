@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Source_Sans_3 } from 'next/font/google';
+import { Bricolage_Grotesque, JetBrains_Mono, Manrope } from 'next/font/google';
 import { ThemeProvider } from '../components/ThemeProvider';
 import { canonicalOrigin } from '../lib/canonical-origin';
 import './globals.css';
 
-const sourceSans = Source_Sans_3({
+const manrope = Manrope({
   subsets: ['latin'],
-  variable: '--font-source-sans',
+  variable: '--font-manrope',
+  display: 'swap',
+});
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-bricolage',
   display: 'swap',
 });
 const jetbrains = JetBrains_Mono({
@@ -17,9 +22,9 @@ const jetbrains = JetBrains_Mono({
 const origin = canonicalOrigin();
 
 export const metadata: Metadata = {
-  title: 'PaperKit | Everyday paperwork, done in seconds.',
+  title: 'PaperKit | Everyday document tools',
   description:
-    'Free generators for salary slips, fuel bills and rent receipts. No signup, no watermark.',
+    'Explore upcoming salary slip, fuel receipt, and house rent receipt tools. Browse illustrative document samples and check tool availability.',
   ...(origin
     ? {
         metadataBase: origin,
@@ -33,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${sourceSans.variable} ${jetbrains.variable}`}
+      className={`${manrope.variable} ${bricolage.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
       <body>

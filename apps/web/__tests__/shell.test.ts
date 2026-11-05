@@ -13,8 +13,8 @@ const test = base.extend<{ browserHealth: undefined }>({
 });
 
 const toolNames = ['Driver Salary Slip', 'Petrol & Fuel Receipt', 'House Rent Receipt'];
-const amounts = ['18,500.00', '4,560.00', '1,240.00', '-2,000.00', '₹ 22,300.00'];
-const sampleName = 'Sample Driver Disbursement Voucher';
+const amounts = ['₹18,500.00', '₹4,560.00', '₹1,240.00', '-₹2,000.00', '₹22,300.00'];
+const sampleName = 'Illustrative Driver salary slip';
 
 test.afterEach(async ({ page }, testInfo) => {
   if (page.url() === 'about:blank') return;
@@ -35,18 +35,18 @@ test.afterEach(async ({ page }, testInfo) => {
 test('approved shell content, Catalog availability, and real anchors', async ({ page }) => {
   await page.goto('/');
   for (const heading of [
-    'Everyday paperwork, done in seconds.',
-    'Driver Disbursement Voucher',
-    'Available Instruments',
-    'Operational Protocol',
-    'Why PaperKit is unconditionally free.',
+    'PaperKit.',
+    'Good on paper.',
+    "For life's paperwork.",
+    'Less admin. More everyday.',
+    'A few useful answers.',
   ]) {
     await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible();
   }
   for (const claim of ['No signup', '100% free', 'No watermark', 'Private by design']) {
-    await expect(page.getByText(claim, { exact: true })).toBeVisible();
+    await expect(page.getByText(claim, { exact: true })).toHaveCount(0);
   }
-  const catalog = page.getByRole('region', { name: 'Available Instruments' });
+  const catalog = page.getByRole('region', { name: "For life's paperwork." });
   const cards = catalog.getByRole('article');
   await expect(cards).toHaveCount(3);
   await expect(cards.getByRole('heading')).toHaveText(toolNames);
@@ -56,10 +56,9 @@ test('approved shell content, Catalog availability, and real anchors', async ({ 
     await expect(card.getByRole('button')).toHaveCount(0);
   }
   for (const [label, target, region] of [
-    ['Tools', '#tool-catalog', 'Available Instruments'],
-    ['About', '#about', 'Why PaperKit is unconditionally free.'],
-    ['See how it works', '#how-it-works', 'Operational Protocol'],
-    ['Browse tools', '#tool-catalog', 'Available Instruments'],
+    ['Tools', '#tool-catalog', "For life's paperwork."],
+    ['About', '#about', 'Less admin. More everyday.'],
+    ['Browse tools', '#tool-catalog', "For life's paperwork."],
   ]) {
     const link = page.getByRole('link', { name: label, exact: true });
     await expect(link).toHaveAttribute('href', target);
@@ -67,30 +66,19 @@ test('approved shell content, Catalog availability, and real anchors', async ({ 
     await expect(page).toHaveURL(new RegExp(`${target}$`));
     await expect(page.getByRole('region', { name: region })).toBeInViewport();
   }
-  const workflow = page.getByRole('region', { name: 'Operational Protocol' });
-  await expect(workflow.getByRole('listitem')).toHaveCount(3);
-  await expect(workflow.getByRole('heading', { level: 3 })).toHaveText([
-    'Input Raw Metadata',
-    'Instant Print Inspection',
-    'Print or Export Vector PDF',
-  ]);
   const footer = page.getByRole('contentinfo');
-  for (const [group, labels] of [
-    ['Instruments', ['Salary Slip', 'Driver Voucher', 'Rent Receipt', 'Fuel Bill']],
-    ['Standards', ['Compliance', 'TDS & HRA', 'Verification', 'Print Specs']],
-    ['System', ['Status Ledger', 'Changelog', 'Privacy Policy', 'Terms']],
-  ] as const) {
-    const navigation = footer.getByRole('navigation', { name: group });
-    await expect(navigation.getByRole('link')).toHaveText([...labels]);
-    for (const link of await navigation.getByRole('link').all()) {
-      await expect(link).toHaveAttribute('href', '#');
-    }
-  }
-  await expect(footer.getByRole('heading', { name: 'Organization' })).toBeVisible();
-  await expect(footer.getByText('PaperKit Institutional', { exact: true })).toBeVisible();
-  await expect(footer.getByText('v2.4.0-IN-STABLE', { exact: true })).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'Tool catalog' })).toHaveAttribute(
+    'href',
+    '#tool-catalog',
+  );
+  await expect(footer.getByRole('link', { name: 'About PaperKit' })).toHaveAttribute(
+    'href',
+    '#about',
+  );
+  await expect(page.locator('a[href="#"]')).toHaveCount(0);
+  await page.getByText('Can I create a document today?', { exact: true }).click();
   await expect(
-    footer.getByText('© 2025 PaperKit. Deterministic ledger instruments.'),
+    page.getByText('Not yet. All tools in the catalog are Coming Soon.', { exact: false }),
   ).toBeVisible();
 });
 
@@ -114,9 +102,13 @@ test('system theme and persistent native toggle preserve visible content and amo
   await expect(page.getByRole('article', { name: sampleName }).getByRole('cell')).toHaveText(
     amounts,
   );
+  await expect(page.getByRole('article', { name: sampleName })).toHaveCSS(
+    'background-color',
+    'rgb(255, 255, 255)',
+  );
 });
 
-test('sample financial values stay fixed through document and stamp entrance', async ({ page }) => {
+test('sample financial values stay fixed without ambient animations', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const paper = page.getByRole('article', { name: sampleName });
   await paper.waitFor({ state: 'attached' });
@@ -139,17 +131,18 @@ test('sample financial values stay fixed through document and stamp entrance', a
   for (const frame of samples) expect(frame).toEqual(amounts);
   const values = amounts.map((amount) => Number(amount.replace(/[^\d.-]/g, '')));
   expect(values.slice(0, -1).reduce((total, value) => total + value, 0)).toBe(values.at(-1));
-  await expect(paper.getByText('PAID · IN-BROWSER', { exact: true })).toBeVisible();
+  expect(await paper.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(
+    0,
+  );
   await expect(paper.getByText('Rajesh Kumar Verma', { exact: true })).toBeVisible();
   await expect(paper.getByText('October 2024', { exact: true })).toBeVisible();
 });
 
-test('reduced motion presents finished paper and stamp immediately', async ({ page }) => {
+test('reduced motion removes stack transforms including hover and focus', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const paper = page.getByRole('article', { name: sampleName });
-  const stamp = paper.getByText('PAID · IN-BROWSER', { exact: true });
-  for (const element of [paper, stamp]) {
+  for (const element of [paper, page.getByTestId('front-paper'), page.getByTestId('rear-paper')]) {
     await element.waitFor({ state: 'attached' });
     const appearance = await element.evaluate((node) => {
       const style = getComputedStyle(node);
@@ -157,12 +150,30 @@ test('reduced motion presents finished paper and stamp immediately', async ({ pa
         animation: style.animationName,
         opacity: style.opacity,
         visibility: style.visibility,
+        transform: style.transform,
+        transition: style.transitionDuration,
       };
     });
-    expect(appearance).toEqual({ animation: 'none', opacity: '1', visibility: 'visible' });
-    await expect(element).toBeVisible();
+    expect(appearance).toEqual({
+      animation: 'none',
+      opacity: '1',
+      visibility: 'visible',
+      transform: 'none',
+      transition: '0s',
+    });
   }
   await expect(paper.getByRole('cell')).toHaveText(amounts);
+  await page.getByTestId('document-stack').hover();
+  await page.getByRole('button', { name: 'Fuel', exact: true }).focus();
+  for (const layer of ['front-paper', 'rear-paper']) {
+    await expect(page.getByTestId(layer)).toHaveCSS('transform', 'none');
+  }
+  await page.getByRole('button', { name: 'Fuel', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Fuel', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.getByRole('article', { name: 'Illustrative Fuel receipt' })).toBeVisible();
 });
 
 test('keyboard order exposes skip link and visibly focused native controls', async ({ page }) => {
@@ -216,25 +227,25 @@ test('approved fonts and icon artwork load without failed assets', async ({ page
   await page.evaluate(() => document.fonts.ready);
   const fonts = await page.evaluate(() => ({
     ui: getComputedStyle(document.body).fontFamily,
-    numbers: getComputedStyle(document.querySelector('td') as Element).fontFamily,
+    display: getComputedStyle(document.querySelector('h1') as Element).fontFamily,
     loaded: Array.from(document.fonts)
       .filter((font) => font.status === 'loaded')
       .map((font) => font.family),
   }));
-  expect.soft(fonts.ui).toMatch(/source.?sans/i);
-  expect.soft(fonts.numbers).toMatch(/jetbrains/i);
-  expect.soft(fonts.loaded.some((family) => /source.?sans/i.test(family))).toBe(true);
-  expect.soft(fonts.loaded.some((family) => /jetbrains/i.test(family))).toBe(true);
+  expect.soft(fonts.ui).toMatch(/manrope/i);
+  expect.soft(fonts.display).toMatch(/bricolage/i);
+  expect.soft(fonts.loaded.some((family) => /manrope/i.test(family))).toBe(true);
+  expect.soft(fonts.loaded.some((family) => /bricolage/i.test(family))).toBe(true);
   const artwork = [
     page.getByRole('link', { name: 'PaperKit home' }),
     ...(await page
-      .getByRole('region', { name: 'Available Instruments' })
+      .getByRole('region', { name: "For life's paperwork." })
       .getByRole('article')
       .all()),
     page.getByRole('button', { name: 'Toggle theme' }),
   ];
   for (const owner of artwork) {
-    const icon = owner.locator('svg:visible');
+    const icon = owner.locator('svg:visible').first();
     await expect(icon).toHaveCount(1);
     expect(
       await icon.evaluate((element) => {
@@ -267,11 +278,18 @@ test('normal text meets canvas contrast in system theme', async ({ page }) => {
         });
       return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
     };
-    const background = luminance(getComputedStyle(document.body).backgroundColor);
     return [
       document.body,
       ...Array.from(document.querySelectorAll('footer a, main > section:first-child p')),
     ].map((element) => {
+      let surface: Element | null = element;
+      let backgroundColor = 'transparent';
+      while (surface) {
+        backgroundColor = getComputedStyle(surface).backgroundColor;
+        if (backgroundColor !== 'transparent' && backgroundColor !== 'rgba(0, 0, 0, 0)') break;
+        surface = surface.parentElement;
+      }
+      const background = luminance(backgroundColor);
       const foreground = luminance(getComputedStyle(element).color);
       return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
     });
@@ -319,7 +337,7 @@ test('HTTP preview omits origin-dependent SEO and unavailable Tool results', asy
       ),
     };
   }, html);
-  expect(metadata.title).toBe('PaperKit | Everyday paperwork, done in seconds.');
+  expect(metadata.title).toBe('PaperKit | Everyday document tools');
   expect(metadata.canonical).toBe(0);
   expect(metadata.originTags).toBe(0);
   expect(JSON.stringify(metadata.structuredData)).not.toContain('ItemList');
@@ -340,4 +358,121 @@ test('HTTP preview omits origin-dependent SEO and unavailable Tool results', asy
     };
   }, xml);
   expect(entries).toEqual({ errors: 0, roots: 1, urls: 0, locations: 0 });
+});
+
+test('sample selection preserves stage geometry, control widths, and truthful totals', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const stage = page.getByRole('group', { name: 'Document samples', exact: true });
+  const selector = page.getByRole('group', { name: 'Document sample', exact: true });
+  await page.evaluate(() => document.fonts.ready);
+  const initialStage = await stage.boundingBox();
+  const widths = await selector
+    .getByRole('button')
+    .evaluateAll((buttons) => buttons.map((button) => button.getBoundingClientRect().width));
+  for (const [label, name] of [
+    ['Fuel', 'Illustrative Fuel receipt'],
+    ['Rent', 'Illustrative House rent receipt'],
+    ['Salary', sampleName],
+  ]) {
+    const button = selector.getByRole('button', { name: label, exact: true });
+    await button.click();
+    await expect(button).toHaveAttribute('aria-pressed', 'true');
+    await expect(selector.locator('[aria-pressed="true"]')).toHaveCount(1);
+    const paper = stage.getByRole('article', { name, exact: true });
+    await expect(paper).toBeVisible();
+    const values = await paper.getByRole('cell').allTextContents();
+    const numbers = values.map((value) => Number(value.replace(/[^\d.-]/g, '')));
+    expect(numbers.slice(0, -1).reduce((total, value) => total + value, 0)).toBe(numbers.at(-1));
+    expect((await stage.boundingBox())?.height).toBe(initialStage?.height);
+    expect(
+      await selector
+        .getByRole('button')
+        .evaluateAll((buttons) => buttons.map((control) => control.getBoundingClientRect().width)),
+    ).toEqual(widths);
+    for (const control of await selector.getByRole('button').all()) {
+      expect((await control.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+    }
+    const overflow = await paper.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      const note = element.lastElementChild?.getBoundingClientRect();
+      return (note?.bottom ?? 0) > bounds.bottom;
+    });
+    expect(overflow, 'All sample content stays on its paper').toBe(false);
+  }
+  await selector.getByRole('button', { name: 'Fuel', exact: true }).click();
+  const fuel = stage.getByRole('article', { name: 'Illustrative Fuel receipt' });
+  await expect(fuel.getByRole('row')).toHaveCount(2);
+  await expect(fuel.getByText('Petrol / 30 litres at INR 100 per litre')).toBeVisible();
+});
+
+test('paper stack hover and selector focus share interruptible transform feedback', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const stack = page.getByTestId('document-stack');
+  const front = page.getByTestId('front-paper');
+  const rear = page.getByTestId('rear-paper');
+  const initial = await front.evaluate((element) => getComputedStyle(element).transform);
+  const initialRear = await rear.evaluate((element) => getComputedStyle(element).transform);
+  await expect(front).toHaveCSS('transition-property', 'transform');
+  expect(await stack.getAttribute('tabindex')).toBeNull();
+  await expect(stack).not.toHaveCSS('cursor', 'pointer');
+  await stack.hover();
+  await expect(front).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, -10)');
+  const hoveredRear = await rear.evaluate((element) => getComputedStyle(element).transform);
+  expect(hoveredRear).not.toBe(initialRear);
+  await page.mouse.move(0, 0);
+  await expect(front).toHaveCSS('transform', initial);
+  const fuel = page.getByRole('button', { name: 'Fuel', exact: true });
+  await fuel.focus();
+  await expect(front).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, -10)');
+  await expect(rear).toHaveCSS('transform', hoveredRear);
+  await page.keyboard.press('Enter');
+  await expect(fuel).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('finalized landing ignores prototype query variants and keyboard switching', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const content = await page.getByRole('main').innerText();
+  for (const variant of ['a', 'b', 'c', 'x']) {
+    await page.goto(`/?variant=${variant}`);
+    expect(await page.getByRole('main').innerText()).toBe(content);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PaperKit.');
+    await expect(page.getByText(/Paper Index|Print Room|Clear Desk|prototype/i)).toHaveCount(0);
+    await expect(page.locator('a[href*="variant="]')).toHaveCount(0);
+    await page.keyboard.press('ArrowRight');
+    await expect(page).toHaveURL(new RegExp(`variant=${variant}$`));
+  }
+});
+
+test('coarse pointers keep paper still while sample controls stay usable', async ({
+  browser,
+  baseURL,
+}) => {
+  const context = await browser.newContext({
+    baseURL,
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto('/');
+    expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(true);
+    const front = page.getByTestId('front-paper');
+    const initial = await front.evaluate((element) => getComputedStyle(element).transform);
+    await page.getByTestId('document-stack').hover();
+    await expect(front).toHaveCSS('transform', initial);
+    await page.getByRole('button', { name: 'Rent', exact: true }).tap();
+    await expect(
+      page.getByRole('article', { name: 'Illustrative House rent receipt', exact: true }),
+    ).toBeVisible();
+  } finally {
+    await context.close();
+  }
 });

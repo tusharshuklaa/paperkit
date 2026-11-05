@@ -37,3 +37,10 @@ next-env.d.ts
 # Browser acceptance artifacts
 test-results/
 playwright-report/
+
+# Local design exploration and review artifacts
+.taste-skill/
+.impeccable/review/
+.impeccable/questions/
+apps/web/.impeccable/review/
+apps/web/.impeccable/questions/

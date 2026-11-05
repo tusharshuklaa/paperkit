@@ -11,13 +11,19 @@ packages/tailwind-config/       Shared tokens; repo-wide Biome command owner
 packages/typescript-config/     Shared TypeScript configurations
 packages/tool-registry/         Typed Tool availability and display ordering
 packages/document-engine/       TODO-only module; no PDF or generation logic
-reference/paperkit/DESIGN.md     Authoritative design decisions
+reference/paperkit/DESIGN.md     Authoritative Paper Index design decisions
+apps/web/DESIGN.md              Derived design-system tooling view
 DESIGN_TOKENS.md                Complete token reference
 docs/specs/                    Platform requirements
 docs/implementation/           Verification, exceptions and release blockers
 docs/adr/                      Architecture decisions
 graphify-out/                  Local generated knowledge graph, not shipped
 ```
+
+Landing design is finalized as Paper Index with the layered Good on paper document
+stage. Paper hover/focus motion respects reduced-motion preferences. Prototypes and
+variant controls are removed; the default route is the finalized page. See the
+[redesign report](docs/implementation/landing-redesign.md) for scope and verification.
 
 ## Local Commands
 

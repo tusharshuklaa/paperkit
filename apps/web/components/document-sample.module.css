@@ -1,0 +1,42 @@
+.paper {
+  background: var(--paper);
+  color: var(--paper-ink);
+  color-scheme: light;
+  padding: var(--space-12);
+  width: 100%;
+  min-height: 390px;
+  border-radius: var(--radius-none);
+  box-shadow: var(--paper-shadow);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding-bottom: var(--space-6); }
+.brand { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); font-weight: 700; }
+.brand svg { width: var(--space-8); height: var(--space-8); }
+.reference { color: var(--paper-muted); font-size: var(--text-micro); }
+.paper h3 { font-size: var(--text-logo); line-height: 1.2; text-wrap: initial; }
+.subtitle { font-size: var(--text-micro); color: var(--paper-muted); margin-top: var(--space-2); min-height: var(--space-12); }
+.details { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--space-6); padding: var(--space-4) 0 var(--space-4); }
+.details dt { color: var(--paper-muted); font-size: var(--text-micro); }
+.details dd { font-size: var(--text-tiny); font-weight: 600; }
+.table { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: var(--text-micro); }
+.table th { font-weight: 400; text-align: left; width: 58%; }
+.table td { text-align: right; white-space: nowrap; }
+.table th, .table td { padding: var(--space-2) 0; border-bottom: var(--hairline) solid var(--paper-rule); }
+.table tfoot th, .table tfoot td { font-weight: 700; padding-top: var(--space-6); border: 0; font-size: var(--text-small); }
+.signoff { display: flex; justify-content: space-between; margin-top: var(--space-6); color: var(--paper-muted); font-size: var(--text-micro); }
+.note { font-size: var(--text-micro); margin-top: var(--space-4); color: var(--paper-muted); }
+.thermal { max-width: 330px; margin-inline: auto; }
+.thermal .header { flex-direction: column; align-items: start; }
+.compact { min-height: 330px; padding: var(--space-10); }
+.compact .reference { display: none; }
+.compact h3 { font-size: var(--text-base); }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 639px) {
+  .paper { padding: var(--space-8); }
+  .paper h3 { font-size: var(--text-base); }
+  .reference { font-size: 8px; }
+  .details { gap: var(--space-2); }
+  .table { font-size: 9px; }
+  .table tfoot th, .table tfoot td { font-size: var(--text-tiny); }
+}

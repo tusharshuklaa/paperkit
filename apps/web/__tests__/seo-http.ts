@@ -65,10 +65,10 @@ try {
   assert.equal(structured.itemListElement.length, 1);
   assert.equal(structured.itemListElement[0].url, destination);
   assert.equal(structured.itemListElement[0].name, 'Synthetic HTTP fixture');
-  const catalog = page.getByRole('region', { name: 'Available Instruments' });
+  const catalog = page.getByRole('region', { name: "For life's paperwork." });
   assert.equal(await catalog.getByText('Coming Soon', { exact: true }).count(), 3);
   assert.equal(
-    await catalog.getByRole('link', { name: 'Synthetic HTTP fixture' }).getAttribute('href'),
+    await catalog.getByRole('link', { name: 'Open Synthetic HTTP fixture' }).getAttribute('href'),
     destination,
   );
   const sitemap = await page.request.get('http://127.0.0.1:3103/sitemap.xml');
