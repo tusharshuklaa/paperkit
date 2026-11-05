@@ -5,12 +5,22 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "check-types": "turbo run check-types",
-    "lint": "biome lint .",
-    "format": "biome format .",
+    "lint": "turbo run lint",
+    "fmt": "turbo run fmt",
+    "format": "turbo run fmt",
+    "typecheck": "turbo run typecheck",
+    "test": "bun test packages apps/web/app/__tests__ && playwright test",
+    "test:seo-http": "bun run apps/web/__tests__/seo-http.ts",
     "check": "biome check .",
-    "check:fix": "biome check --write ."
+    "check:fix": "biome check --write .",
+    "fallow": "fallow",
+    "fallow:audit": "fallow audit",
+    "graphify:build": "graphify extract . --code-only --no-cluster",
+    "graphify:update": "graphify update . --no-cluster",
+    "graphify:query": "graphify query"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
     "@biomejs/biome": "1.9.4",
     "fallow": "^3.39.0",
     "turbo": "^2.11.10"
@@ -21,12 +31,6 @@
       "version": "1.4.4"
     }
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "trustedDependencies": [
-    "@biomejs/biome",
-    "@parcel/watcher"
-  ]
+  "workspaces": ["apps/*", "packages/*"],
+  "trustedDependencies": ["@biomejs/biome", "@parcel/watcher"]
 }

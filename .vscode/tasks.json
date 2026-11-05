@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "PaperKit preview",
+			"type": "shell",
+			"command": "rtk proxy bun run --cwd apps/web dev --port 3101",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "PaperKit production preview",
+			"type": "shell",
+			"command": "rtk proxy bun run --cwd apps/web start --port 3102",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

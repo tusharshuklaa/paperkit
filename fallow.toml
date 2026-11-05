@@ -1,0 +1,13 @@
+[[framework]]
+name = "paperkit-public-consumers"
+enablers = ["typescript"]
+entryPointRole = "support"
+entryPoints = ["apps/web/app/__tests__/package-consumer.ts", "packages/ui/__tests__/public-consumer.types.tsx"]
+
+[audit]
+gate = "new-only"
+css = true
+cssDeep = true
+
+[rules]
+css-token-drift = "warn"

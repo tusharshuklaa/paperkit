@@ -1,4 +1,6 @@
 ## Agent Behavior
+- Keep shared agent instructions in `AGENTS.md` for all harnesses; do not create harness-specific instruction files.
+- Run CI only after a PR from `develop` into `main` is merged.
 - Think and state assumptions before coding; ask if requirements or behavior are ambiguous. If multiple interpretations exist, present them - don't pick silently.
 - Match existing style; mention unrelated issues instead of fixing them. If you notice unrelated dead code, mention it; don't delete it.
 - Define success criteria. Loop until verified. Strong success criteria let you loop independently; weak criteria ("make it work") require constant clarification.
@@ -57,6 +59,21 @@ For non-skill agents, treat the task map below as the local onboarding source: r
 | understand a finding | `fallow explain <issue-type>` |
 | scope a monorepo | `--workspace <glob> / --changed-workspaces <ref>` (global flags, prefix any command) |
 <!-- fallow:setup-hooks:end -->
+
+## Graphify
+
+When `graphify-out/graph.json` exists, start architecture, component-location,
+and code-relationship questions with `graphify query "<question>"`. Use
+`graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"`
+for focused concepts. Read source for edits, debugging, or missing/stale graph detail.
+Use `graphify-out/wiki/index.md` for broad navigation when available; reserve
+`graphify-out/GRAPH_REPORT.md` for broad architecture reviews or insufficient query results.
+Build with `bun run graphify:build`; refresh with `bun run graphify:update`.
+
+## Library Docs
+
+Use Context7 for library/API docs and third-party setup or code generation.
+Resolve the library ID, then query its docs before relying on remembered API details.
 
 ## Agent skills
 

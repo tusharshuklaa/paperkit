@@ -4,3 +4,10 @@
 *.json.hbs
 scripts/
 
+# Tooling and design references are not application source
+.agents/
+.claude/
+.codex/
+.github/
+reference/
+

@@ -1,7 +1,10 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "tasks": {
+    "fmt": { "cache": false, "outputs": [] },
+    "typecheck": { "dependsOn": ["^build", "^typecheck"] },
     "build": {
+      "env": ["PAPERKIT_CANONICAL_ORIGIN"],
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "dist/**"]
     },
@@ -14,6 +17,7 @@
       "cache": false
     },
     "lint": {
+      "cache": false,
       "dependsOn": ["^lint"]
     }
   }

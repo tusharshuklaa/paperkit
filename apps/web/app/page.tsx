@@ -1,17 +1,32 @@
-import { Button } from '@repo/ui/button';
+import { About } from '../components/About';
+import { Catalog } from '../components/Catalog';
+import { Header } from '../components/Header';
+import { Hero } from '../components/Hero';
+import { SiteFooter } from '../components/SiteFooter';
+import { Workflow } from '../components/Workflow';
+import { canonicalOrigin } from '../lib/canonical-origin';
+import { toolListJsonLd } from '../lib/tool-list-json-ld';
 
 export default function Page() {
+  const structuredData = toolListJsonLd(canonicalOrigin());
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-24">
-      <h1 className="text-4xl font-bold tracking-tight">Paperkit</h1>
-      <p className="max-w-lg text-center text-zinc-500">
-        A Turborepo monorepo with Bun, Next.js, Tailwind CSS v4, TypeScript, and Biome.
-      </p>
-      <div className="flex gap-4">
-        <Button variant="primary">Primary</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="outline">Outline</Button>
-      </div>
-    </main>
+    <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Header />
+      <main id="main">
+        <Hero />
+        <Catalog />
+        <Workflow />
+        <About />
+      </main>
+      <SiteFooter />
+      {structuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData).replace(/</g, '\\u003c')}
+        </script>
+      )}
+    </>
   );
 }

@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "fallow": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/node_modules/.bin/fallow-mcp",
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    "graphify": {
+      "type": "stdio",
+      "command": "graphify-mcp",
+      "args": ["--graph", "${workspaceFolder}/graphify-out/graph.json"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

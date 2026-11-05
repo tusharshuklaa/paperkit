@@ -5,6 +5,10 @@ node_modules
 
 # Local env files
 .env*.local
+.vscode/settings.json
+
+# Generated knowledge graph and extraction cache
+graphify-out/
 
 # Turbo
 .turbo
@@ -29,3 +33,7 @@ bun.lock
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Browser acceptance artifacts
+test-results/
+playwright-report/
