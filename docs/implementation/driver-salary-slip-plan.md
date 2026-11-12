@@ -1,6 +1,6 @@
 # Driver Salary Slip Implementation Plan
 
-Status: agreed scope; implementation not started. Adding the context glossary does not scaffold a runnable app.
+Status: implementation in progress. Source parity is frozen; independent app, validated form, three receipt templates, signatures, opt-in persistence, and print workflow are implemented. Remaining work: final integration review, documentation/evidence, and full handoff checks.
 
 ## Goal
 
