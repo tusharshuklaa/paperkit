@@ -1,16 +1,16 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-05T00:00:00Z",
+  "generatedAt": "2026-11-13T14:12:27Z",
   "title": "Design System: PaperKit",
   "extensions": {
     "colorMeta": {
-      "canvas": { "role": "neutral", "displayName": "Pale Green Canvas" },
+      "canvas": { "role": "neutral", "displayName": "Pale Stone Canvas" },
       "surface": { "role": "neutral", "displayName": "White Surface" },
-      "surface-alt": { "role": "primary", "displayName": "Green Paper Field" },
-      "border": { "role": "neutral", "displayName": "Soft Green Border" },
-      "text": { "role": "primary", "displayName": "Forest Ink" },
-      "muted": { "role": "neutral", "displayName": "Muted Green Ink" },
-      "accent": { "role": "primary", "displayName": "Forest Accent" },
+      "surface-alt": { "role": "primary", "displayName": "Soft Plum Field" },
+      "border": { "role": "neutral", "displayName": "Soft Plum Border" },
+      "text": { "role": "primary", "displayName": "Deep Plum Ink" },
+      "muted": { "role": "neutral", "displayName": "Muted Plum Ink" },
+      "accent": { "role": "primary", "displayName": "Plum Accent" },
       "paper": { "role": "neutral", "displayName": "Fixed White Paper" },
       "paper-ink": { "role": "neutral", "displayName": "Document Ink" },
       "paper-muted": { "role": "neutral", "displayName": "Document Secondary Ink" },
@@ -41,7 +41,7 @@
     "shadows": [
       {
         "name": "paper-light",
-        "value": "0 18px 36px -16px rgb(23 60 48 / 24%)",
+        "value": "0 18px 36px -16px rgb(56 44 58 / 24%)",
         "purpose": "Soft document elevation in light shell."
       },
       {
@@ -150,9 +150,9 @@
   ],
   "narrative": {
     "northStar": "Paper Index",
-    "overview": "PaperKit is an open, editorial index of everyday paperwork. Pale green fields and forest ink frame actual semantic HTML documents; monumental brand typography provides identity without decorative imagery. Document sheets supply visual media, not raster assets.",
+    "overview": "PaperKit is an open, editorial index of everyday paperwork. Plum fields and stone neutrals frame actual semantic HTML documents; monumental brand typography provides identity without decorative imagery. Document sheets supply visual media, not raster assets.",
     "keyCharacteristics": [
-      "Pale green fields with forest ink.",
+      "Plum fields, stone canvas and deep plum ink.",
       "Monumental Bricolage Grotesque paired with Manrope.",
       "White semantic document sheets as visual media.",
       "Restrained fan-and-lift motion with stable selection geometry."

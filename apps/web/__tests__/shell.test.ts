@@ -16,6 +16,32 @@ const toolNames = ['Driver Salary Slip', 'Petrol & Fuel Receipt', 'House Rent Re
 const amounts = ['₹18,500.00', '₹4,560.00', '₹1,240.00', '-₹2,000.00', '₹22,300.00'];
 const sampleName = 'Illustrative Driver salary slip';
 
+test('Plum & Stone tokens follow the shell theme', async ({ page }, testInfo) => {
+  await page.goto('/');
+  const expected = {
+    light: { canvas: '#f6f5f5', accent: '#75496c', field: '#e7dce5' },
+    dark: { canvas: '#211d23', accent: '#eabfe0', field: '#4c3b4b' },
+  };
+  const initial = testInfo.project.use.colorScheme === 'dark' ? 'dark' : 'light';
+  const opposite = initial === 'dark' ? 'light' : 'dark';
+  const tokens = () =>
+    page.evaluate(() => {
+      const style = getComputedStyle(document.documentElement);
+      return {
+        canvas: style.getPropertyValue('--canvas').trim(),
+        accent: style.getPropertyValue('--accent').trim(),
+        field: style.getPropertyValue('--surface-alt').trim(),
+      };
+    });
+  await expect.poll(tokens).toEqual(expected[initial]);
+  await page.getByRole('button', { name: 'Toggle theme' }).click();
+  await expect.poll(tokens).toEqual(expected[opposite]);
+  await expect(page.getByRole('article', { name: sampleName })).toHaveCSS(
+    'background-color',
+    'rgb(255, 255, 255)',
+  );
+});
+
 test.afterEach(async ({ page }, testInfo) => {
   if (page.url() === 'about:blank') return;
   await page.evaluate(async () => {

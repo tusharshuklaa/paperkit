@@ -1,6 +1,6 @@
 # PaperKit Tokens
 
-Derived from implemented [shared-styles.css](packages/tailwind-config/shared-styles.css), interpreted by sole [design authority](reference/paperkit/DESIGN.md). [App DESIGN](apps/web/DESIGN.md) is a derived tooling projection, not a second authority. CSS owns runtime values.
+Derived from implemented [shared-styles.css](packages/tailwind-config/shared-styles.css) and the [design system](apps/web/DESIGN.md). CSS owns runtime values; the design system records the approved visual direction.
 
 ## Theme Values
 
@@ -8,31 +8,31 @@ Names carry `--` prefix in CSS. Dark inherits root unless overridden.
 
 | Token | Light | Dark |
 | --- | --- | --- |
-| canvas | #f3f5ef | #10251e |
-| surface | #ffffff | #173c30 |
-| surface-alt | #dce5d6 | #254738 |
-| border | #b6c8b7 | #587362 |
-| text | #173c30 | #eef3e8 |
-| muted | #4b6256 | #bdcdbb |
-| accent | #1c513d | #d3e6bd |
-| accent-soft | #dce5d6 | #254738 |
-| accent-foreground | #ffffff | #10251e |
-| action | #1c513d | #d3e6bd |
-| action-hover | #173c30 | #e3f0d7 |
-| action-foreground | #ffffff | #10251e |
+| canvas | #f6f5f5 | #211d23 |
+| surface | #ffffff | #342b35 |
+| surface-alt | #e7dce5 | #4c3b4b |
+| border | #c7b7c4 | #827080 |
+| text | #382c3a | #f5edf3 |
+| muted | #645464 | #d8c6d3 |
+| accent | #75496c | #eabfe0 |
+| accent-soft | #e7dce5 | #4c3b4b |
+| accent-foreground | #ffffff | #211d23 |
+| action | #75496c | #eabfe0 |
+| action-hover | #5d3654 | #f4d5eb |
+| action-foreground | #ffffff | #211d23 |
 | success | #15803d | #4ade80 |
 | success-soft | #ecfdf5 | #10291b |
 | error | #dc2626 | #f87171 |
 | error-soft | #fef2f2 | #32191d |
 | warning | #92400e | #fcd34d |
 | warning-soft | #fffbeb | #302713 |
-| landing-fuel-field | #e6dfd8 | #463f37 |
-| landing-rent-field | #d8e5e9 | #29464b |
-| landing-inverse | #173c30 | #dce5d6 |
-| landing-on-inverse | #f3f5ef | #173c30 |
-| paper-shadow | 0 18px 36px -16px rgb(23 60 48 / 24%) | 0 18px 36px -16px rgb(0 0 0 / 50%) |
+| landing-fuel-field | #e7e0d9 | #4d433e |
+| landing-rent-field | #dce6e5 | #384949 |
+| landing-inverse | #514052 | #e7dce5 |
+| landing-on-inverse | #fbf5fa | #382c3a |
+| paper-shadow | 0 18px 36px -16px rgb(56 44 58 / 24%) | 0 18px 36px -16px rgb(0 0 0 / 50%) |
 | dot | rgb(0 0 0 / 5%) | rgb(255 255 255 / 8%) |
-| glow | radial-gradient(circle, rgb(28 81 61 / 12%), transparent 70%) | radial-gradient(circle, rgb(211 230 189 / 12%), transparent 70%) |
+| glow | radial-gradient(circle, rgb(117 73 108 / 12%), transparent 70%) | radial-gradient(circle, rgb(234 191 224 / 12%), transparent 70%) |
 
 Dot/glow definitions are compatibility inventory, not active landing treatments. Landing has solid fields, no dotted/gradient background. Semantic state colors support shared primitives, not product claims. Root color scheme is light; `.dark` is dark; document samples explicitly keep light scheme.
 
@@ -46,10 +46,10 @@ Dot/glow definitions are compatibility inventory, not active landing treatments.
 | paper-label | #5a625d |
 | paper-border | #dce2dc |
 | paper-rule | #dce2dc |
-| paper-total | #f3f5ef |
+| paper-total | #f6f5f5 |
 | paper-error | #991b1b |
 | paper-error-soft | #fef2f2 |
-| stamp-ink | #1c513d |
+| stamp-ink | #75496c |
 | transparent | transparent |
 | disabled-opacity | 0.55 |
 

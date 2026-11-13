@@ -30,13 +30,13 @@ Keep financial sample values deterministic and arithmetically correct.
 ## Brand Commitments
 
 Keep PaperKit name and truthful Tool status. User selected final production Paper Index A + B
-Good on paper: monumental PaperKit heading, pale green/forest fields, two rotated semantic
+Good on paper: monumental PaperKit heading, Plum & Stone fields, two rotated semantic
 document samples, and restrained fan-and-lift hover/focus motion.
 Manrope body, Bricolage Grotesque display and shared JetBrains Mono numeric compatibility.
 Themes preserve fixed white paper. Document HTML is visual media; no raster assets ship.
 Discard blue legacy styling, dotted/gradient landing backgrounds and prototype alternatives.
-Sole visual authority: [reference DESIGN](../../reference/paperkit/DESIGN.md).
-[App DESIGN](DESIGN.md) and sidecar are derived tooling views, not independent authority.
+Visual authority: [DESIGN](DESIGN.md); [shared CSS](../../packages/tailwind-config/shared-styles.css)
+owns runtime tokens and the sidecar records tooling details.
 
 ## Evidence on Hand
 
@@ -55,8 +55,7 @@ No verified testimonials, customer logos, commercial statistics, or working gene
 ## Resolved Decision
 
 Visual direction is selected and implemented: Paper Index A + B Good on paper,
-including stacked papers and hover animation. Prototype exploration is complete;
-prototype removal belongs to implementation owner, not a documentation-only deletion claim.
+including stacked papers and hover animation, with the selected Plum & Stone palette.
 Sample selection and catalog derive from Tool registry through explicit presentation mappings.
 All three Tools remain Coming Soon; selection does not enable generation.
 

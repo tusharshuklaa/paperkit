@@ -3,7 +3,7 @@
 ## Decision
 
 User selected Paper Index's identity and Print Room's Good on paper document stack.
-Pale green, forest ink, Manrope, and Bricolage Grotesque form the final system.
+Plum & Stone, Manrope, and Bricolage Grotesque form the final system.
 Prototype variants, switcher, variant keyboard handlers, and prototype source files
 are removed. `/` renders the final design in development and production.
 
@@ -12,7 +12,7 @@ are removed. `/` renders the final design in development and production.
 THESIS: PaperKit's name becomes the cover of an everyday document index; real
 document layouts, not generic software chrome, supply the visual centerpiece.
 
-OWN-WORLD: pale green canvas, forest ink, sage stage, white paper, warm fuel and
+OWN-WORLD: pale stone canvas, plum ink, soft plum stage, white paper, warm fuel and
 cool rent fields. Monumental display type pairs with precise humanist body type.
 
 STORY: identify PaperKit, inspect illustrative salary/fuel/rent samples, browse
@@ -42,7 +42,7 @@ checkmark width, stage height, sheet height, and caption space.
 - LandingCatalog consumes the public registry; unavailable tools have no generator links.
 - DocumentSample renders deterministic illustrative data, never official records.
 - Shared token CSS owns palettes, typography roles, geometry, and motion.
-- Reference design authority is normative; app DESIGN.md and root token reference derive from it.
+- App DESIGN.md records the visual authority; shared CSS owns runtime values and the root token reference inventories them.
 
 ## Verification
 

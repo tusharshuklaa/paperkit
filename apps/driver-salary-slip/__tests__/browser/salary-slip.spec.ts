@@ -7,6 +7,30 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test('Plum & Stone tokens follow the tool theme and keep receipts white', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/');
+  const expected = {
+    light: { canvas: '#f6f5f5', action: '#75496c' },
+    dark: { canvas: '#211d23', action: '#eabfe0' },
+  };
+  const initial = testInfo.project.use.colorScheme === 'dark' ? 'dark' : 'light';
+  const opposite = initial === 'dark' ? 'light' : 'dark';
+  const tokens = () =>
+    page.evaluate(() => {
+      const style = getComputedStyle(document.documentElement);
+      return {
+        canvas: style.getPropertyValue('--canvas').trim(),
+        action: style.getPropertyValue('--action').trim(),
+      };
+    });
+  await expect.poll(tokens).toEqual(expected[initial]);
+  await page.getByRole('button', { name: 'Toggle theme' }).click();
+  await expect.poll(tokens).toEqual(expected[opposite]);
+  await expect(page.locator('.receipt-paper')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+});
+
 test('defaults, required validation, three templates, and signature presentation', async ({
   page,
 }) => {

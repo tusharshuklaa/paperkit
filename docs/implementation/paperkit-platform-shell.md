@@ -2,6 +2,8 @@
 
 Snapshot: 2026-11-04, final local Platform Shell verification. Local implementation is complete; public release remains blocked on verified production origin and release checks below. Verification results supplied by integration owner are recorded here, distinct from this docs-only pass. This pass edits only root README and this report; no commit, branch, deployment, or CI run was performed.
 
+This report is historical. Current design direction and tokens are maintained in [DESIGN.md](../../apps/web/DESIGN.md) and [DESIGN_TOKENS.md](../../DESIGN_TOKENS.md).
+
 ## Resulting Structure
 
 ```text
