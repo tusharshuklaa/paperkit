@@ -30,7 +30,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>
-      </body>
+      {/* impeccable-live-start */}
+<script src="http://localhost:8400/live.js?token=2cb0ef32-5dd2-4b33-9bf4-5298b8fc26c2"></script>
+{/* impeccable-live-end */}
+</body>
     </html>
   );
 }

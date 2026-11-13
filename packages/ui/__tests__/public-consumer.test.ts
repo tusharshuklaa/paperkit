@@ -7,6 +7,7 @@ import { FieldWrapper } from '@repo/ui/FieldWrapper';
 import { Input } from '@repo/ui/Input';
 import { PaperSheet } from '@repo/ui/PaperSheet';
 import { RevenueStamp } from '@repo/ui/RevenueStamp';
+import { Select } from '@repo/ui/Select';
 import { SignatureBlock } from '@repo/ui/SignatureBlock';
 import { Stamp } from '@repo/ui/Stamp';
 import { ToolCard } from '@repo/ui/ToolCard';
@@ -25,6 +26,34 @@ const tool = {
 };
 
 describe('published UI consumer contract', () => {
+  test('preserves native Select props and decorative chevron semantics', () => {
+    const html = renderToStaticMarkup(
+      createElement(
+        Select,
+        {
+          id: 'currency',
+          name: 'currency',
+          defaultValue: 'INR',
+          disabled: true,
+          error: true,
+          'aria-label': 'Currency',
+          'aria-describedby': 'currency-error',
+        },
+        createElement('option', { value: 'INR' }, 'Indian Rupee'),
+      ),
+    );
+    expect(html).toContain('<select');
+    expect(html).toContain('id="currency"');
+    expect(html).toContain('name="currency"');
+    expect(html).toContain('disabled=""');
+    expect(html).toContain('aria-invalid="true"');
+    expect(html).toContain('aria-label="Currency"');
+    expect(html).toContain('aria-describedby="currency-error"');
+    expect(html).toContain('selected=""');
+    expect(html).toContain('aria-hidden="true"');
+    expect(html).toContain('pk-select-control__chevron');
+  });
+
   test('preserves canonical and legacy native Button props', () => {
     expect(LegacyButton).toBe(Button);
     for (const variant of ['primary', 'secondary', 'outline']) {

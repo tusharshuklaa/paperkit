@@ -1,15 +1,16 @@
 'use client';
 
 import { currencyOptions } from '@/lib/driver-salary-slip/currency-options';
-import type { FormValues } from '@/lib/driver-salary-slip/form-schema';
+import { type FormValues, formSchema } from '@/lib/driver-salary-slip/form-schema';
 import { readSignatureImage } from '@/lib/driver-salary-slip/read-signature-image';
 import { Button } from '@repo/ui/Button';
 import { FieldWrapper } from '@repo/ui/FieldWrapper';
 import { Input } from '@repo/ui/Input';
-import { Printer, RotateCcw, Upload, X } from 'lucide-react';
+import { Select } from '@repo/ui/Select';
+import { CheckCircle2, ChevronDown, Printer, RotateCcw, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
-import { useWatch } from 'react-hook-form';
+import { useController, useWatch } from 'react-hook-form';
 
 type SalarySlipFormProps = {
   form: UseFormReturn<FormValues>;
@@ -57,9 +58,13 @@ export function SalarySlipForm({
   const values = useWatch({ control: form.control }) as FormValues;
   const signature = values.uploadedSignature;
   const driverName = values.driverName;
+  const isReadyToPrint = formSchema.safeParse(values).success;
   const { errors } = form.formState;
   const fieldError = (name: keyof FormValues) => errors[name]?.message?.toString();
-  const paymentDateRegistration = form.register('paymentDate');
+  const { field: paymentDateField } = useController({
+    control: form.control,
+    name: 'paymentDate',
+  });
 
   const handleUpload = async (file?: File) => {
     if (!file) return;
@@ -84,74 +89,50 @@ export function SalarySlipForm({
       }}
     >
       <fieldset className="form-section">
-        <legend>People</legend>
+        <legend>Driver and payer</legend>
         <div className="field-grid field-grid--people">
           <div className="field-stack">
             <label className="field-label" htmlFor="driver-salutation">
               Driver salutation
             </label>
-            <select
-              className="pk-input pk-select"
+            <Select
               id="driver-salutation"
               value={values.driverSalutation}
               {...form.register('driverSalutation')}
-              onChange={(event) =>
-                form.setValue(
-                  'driverSalutation',
-                  event.target.value as FormValues['driverSalutation'],
-                  { shouldDirty: true, shouldValidate: form.formState.isSubmitted },
-                )
-              }
             >
               <option>Mr.</option>
               <option>Mrs.</option>
-            </select>
+            </Select>
           </div>
           <FieldWrapper id="driver-name" label="Driver name" error={fieldError('driverName')}>
             <Input
-              autoComplete="name"
+              autoComplete="section-driver name"
+              autoCapitalize="words"
+              required
               value={values.driverName}
               {...form.register('driverName')}
-              onChange={(event) =>
-                form.setValue('driverName', event.target.value, {
-                  shouldDirty: true,
-                  shouldValidate: form.formState.isSubmitted,
-                })
-              }
             />
           </FieldWrapper>
           <div className="field-stack">
             <label className="field-label" htmlFor="payer-salutation">
               Payer salutation
             </label>
-            <select
-              className="pk-input pk-select"
+            <Select
               id="payer-salutation"
               value={values.payerSalutation}
               {...form.register('payerSalutation')}
-              onChange={(event) =>
-                form.setValue(
-                  'payerSalutation',
-                  event.target.value as FormValues['payerSalutation'],
-                  { shouldDirty: true, shouldValidate: form.formState.isSubmitted },
-                )
-              }
             >
               <option>Mr.</option>
               <option>Mrs.</option>
-            </select>
+            </Select>
           </div>
           <FieldWrapper id="payer-name" label="Payer name" error={fieldError('payerName')}>
             <Input
-              autoComplete="name"
+              autoComplete="section-payer name"
+              autoCapitalize="words"
+              required
               value={values.payerName}
               {...form.register('payerName')}
-              onChange={(event) =>
-                form.setValue('payerName', event.target.value, {
-                  shouldDirty: true,
-                  shouldValidate: form.formState.isSubmitted,
-                })
-              }
             />
           </FieldWrapper>
         </div>
@@ -162,15 +143,12 @@ export function SalarySlipForm({
         >
           <Input
             autoCapitalize="characters"
-            maxLength={10}
+            autoComplete="off"
+            placeholder="e.g. KA03AB1234"
+            required
+            spellCheck={false}
             value={values.vehicleNumber}
             {...form.register('vehicleNumber')}
-            onChange={(event) =>
-              form.setValue('vehicleNumber', event.target.value, {
-                shouldDirty: true,
-                shouldValidate: form.formState.isSubmitted,
-              })
-            }
           />
         </FieldWrapper>
       </fieldset>
@@ -186,50 +164,53 @@ export function SalarySlipForm({
               id="payment-date"
               max="9999-12-31"
               min="1900-01-01"
-              name={paymentDateRegistration.name}
-              onBlur={paymentDateRegistration.onBlur}
-              ref={paymentDateRegistration.ref}
+              name={paymentDateField.name}
+              onBlur={paymentDateField.onBlur}
+              ref={paymentDateField.ref}
+              required
               type="date"
               value={dateInputValue(values.paymentDate)}
               aria-invalid={Boolean(fieldError('paymentDate'))}
-              onChange={(event) => {
-                const date = event.target.value
-                  ? new Date(`${event.target.value}T00:00:00`)
-                  : new Date(Number.NaN);
-                form.setValue('paymentDate', date, {
-                  shouldDirty: true,
-                  shouldValidate: form.formState.isSubmitted,
-                });
-              }}
+              aria-describedby="payment-date-error"
+              onChange={(event) =>
+                paymentDateField.onChange(
+                  new Date(event.target.value ? `${event.target.value}T00:00:00` : Number.NaN),
+                )
+              }
             />
-            <output aria-live="polite" className="field-error">
+            <div
+              id="payment-date-error"
+              aria-live="polite"
+              aria-atomic="true"
+              className="field-error"
+            >
               {fieldError('paymentDate') ?? ''}
-            </output>
+            </div>
           </div>
           <div className="field-stack">
             <label className="field-label" htmlFor="salary-month">
               Salary month
             </label>
-            <select
+            <Select
               aria-invalid={Boolean(fieldError('salaryMonth'))}
-              className="pk-input pk-select"
+              aria-describedby="salary-month-error"
               id="salary-month"
+              required
               value={values.salaryMonth}
               {...form.register('salaryMonth')}
-              onChange={(event) =>
-                form.setValue('salaryMonth', event.target.value as FormValues['salaryMonth'], {
-                  shouldDirty: true,
-                  shouldValidate: form.formState.isSubmitted,
-                })
-              }
             >
               {months.map((month) => (
                 <option key={month}>{month}</option>
               ))}
-            </select>
-            <output aria-live="polite" className="field-error">
+            </Select>
+            <div
+              id="salary-month-error"
+              aria-live="polite"
+              aria-atomic="true"
+              className="field-error"
+            >
               {fieldError('salaryMonth') ?? ''}
-            </output>
+            </div>
           </div>
           <div className="field-stack">
             <label className="field-label" htmlFor="salary-amount">
@@ -239,42 +220,44 @@ export function SalarySlipForm({
               id="salary-amount"
               inputMode="decimal"
               min="0"
+              required
               step="any"
               type="number"
               value={Number.isFinite(values.salaryAmount) ? values.salaryAmount : ''}
               aria-invalid={Boolean(fieldError('salaryAmount'))}
+              aria-describedby="salary-amount-error"
               {...form.register('salaryAmount', { valueAsNumber: true })}
             />
-            <output aria-live="polite" className="field-error">
+            <div
+              id="salary-amount-error"
+              aria-live="polite"
+              aria-atomic="true"
+              className="field-error"
+            >
               {fieldError('salaryAmount') ?? ''}
-            </output>
+            </div>
           </div>
           <div className="field-stack">
             <label className="field-label" htmlFor="currency">
               Currency
             </label>
-            <select
+            <Select
               aria-invalid={Boolean(fieldError('currencyId'))}
-              className="pk-input pk-select"
+              aria-describedby="currency-error"
               id="currency"
+              required
               value={values.currencyId}
               {...form.register('currencyId')}
-              onChange={(event) =>
-                form.setValue('currencyId', event.target.value, {
-                  shouldDirty: true,
-                  shouldValidate: form.formState.isSubmitted,
-                })
-              }
             >
               {currencyOptions.map(({ id, label }) => (
                 <option key={id} value={id}>
                   {label}
                 </option>
               ))}
-            </select>
-            <output aria-live="polite" className="field-error">
+            </Select>
+            <div id="currency-error" aria-live="polite" aria-atomic="true" className="field-error">
               {fieldError('currencyId') ?? ''}
-            </output>
+            </div>
           </div>
         </div>
       </fieldset>
@@ -370,7 +353,11 @@ export function SalarySlipForm({
             {signatureError}
           </p>
           {driverName.trim() || signature ? (
-            <>
+            <details className="signature-adjustments">
+              <summary>
+                Signature position
+                <ChevronDown aria-hidden="true" />
+              </summary>
               <div className="adjustment-list">
                 <label className="range-row" htmlFor="signature-x">
                   <span>Horizontal</span>
@@ -457,7 +444,7 @@ export function SalarySlipForm({
               >
                 <RotateCcw aria-hidden="true" /> Reset signature position
               </Button>
-            </>
+            </details>
           ) : null}
         </div>
       </fieldset>
@@ -473,6 +460,19 @@ export function SalarySlipForm({
           <X aria-hidden="true" /> Clear saved data
         </Button>
       </div>
+      <output
+        aria-live="polite"
+        className={`receipt-status${isReadyToPrint ? ' receipt-status--ready' : ''}`}
+      >
+        {isReadyToPrint ? (
+          <>
+            <CheckCircle2 aria-hidden="true" className="receipt-status__icon" />
+            Receipt ready to print
+          </>
+        ) : (
+          'Complete required fields to prepare receipt.'
+        )}
+      </output>
       <p className="privacy-note">
         Nothing is saved automatically. Save &amp; Print can retain these details and an uploaded
         signature in this browser.

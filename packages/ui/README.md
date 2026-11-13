@@ -1,6 +1,6 @@
 # Shared UI
 
-Server-compatible React primitives. No client boundary, hooks, tracking, generator logic, or dependency additions. Client consumers can pass native handlers. Existing `@repo/ui/button` remains compatible.
+Server-compatible React primitives. No client boundary, hooks, tracking, or generator logic. Select uses Lucide for its decorative chevron. Client consumers can pass native handlers. Existing `@repo/ui/button` remains compatible.
 
 Import CSS once from `@repo/ui/styles.css`; it includes `@repo/tailwind-config` tokens. Public component exports use existing `dist` convention. Run package build before consuming changed components; Next.js can transpile `@repo/ui` as before. Each component also exports its matching `NameProps` type.
 
@@ -12,6 +12,7 @@ import { FieldWrapper } from '@repo/ui/FieldWrapper';
 import { Input } from '@repo/ui/Input';
 import { PaperSheet } from '@repo/ui/PaperSheet';
 import { RevenueStamp } from '@repo/ui/RevenueStamp';
+import { Select } from '@repo/ui/Select';
 import { SignatureBlock } from '@repo/ui/SignatureBlock';
 import { Stamp } from '@repo/ui/Stamp';
 import { ToolCard } from '@repo/ui/ToolCard';
@@ -26,6 +27,7 @@ All primitives accept native attributes for their element, `className`, and chil
 | Button | button | `variant?: 'primary' \| 'secondary' \| 'outline'` (primary). Native `type` behavior preserved; pass `type="button"` for non-submit commands. |
 | Badge | span | `variant?: 'neutral' \| 'accent' \| 'success' \| 'warning' \| 'error'` (neutral). |
 | Input | input | All native input props including React 19 `ref`; `error?: boolean` sets `aria-invalid`. Requires accessible label from FieldWrapper or native labeling attributes. |
+| Select | select inside span | Native single-select props including React 19 `ref`; `error?: boolean` sets `aria-invalid`. Pass native options as children and associate a label by `id`. `className` applies to select. Native picker and keyboard behavior preserved; chevron is decorative, inset, and ignores pointer events. Multiple/size listboxes excluded. |
 | FieldWrapper | div | Required `id`, `label: ReactNode`, single input `children: ReactElement<InputHTMLAttributes<HTMLInputElement>>`; optional `helper`, `error` (ReactNode). `id` belongs to input, not wrapper. |
 | ToolCard | article | Required `name`, `description`, `category`, `format` (strings), `icon: ReactNode`; `status: 'live'` requires `href: string`; `status: 'coming-soon'` forbids `href`. No children. |
 | PaperSheet | article | Native HTML attributes; name sample documents with `aria-label`. |
@@ -60,6 +62,7 @@ ToolCard's icon is decorative; name is h3, live name is anchor. Coming Soon rend
 | Button | `.pk-button`, `.pk-button--primary`, `.pk-button--secondary`, `.pk-button--outline` |
 | Badge | `.pk-badge`, `.pk-badge--neutral`, `.pk-badge--accent`, `.pk-badge--success`, `.pk-badge--warning`, `.pk-badge--error` |
 | Input | `.pk-input`; error selector `[aria-invalid="true"]` |
+| Select | `.pk-select-control`, `.pk-input.pk-select`, `.pk-select-control__chevron` |
 | FieldWrapper | `.pk-field`, `.pk-field__label`, `.pk-field__messages`, `.pk-field__helper`, `.pk-field__error` |
 | ToolCard | `.pk-tool-card`, `.pk-tool-card--live`, `.pk-tool-card--coming-soon`, `__top`, `__icon`, `__name`, `__link`, `__description`, `__meta` (all prefixed `pk-tool-card`) |
 | PaperSheet | `.pk-paper-sheet` |

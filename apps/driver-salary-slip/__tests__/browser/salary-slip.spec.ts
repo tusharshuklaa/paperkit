@@ -7,6 +7,112 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test('blur validation stays quiet until interaction and corrections clear errors without layout shifts', async ({
+  page,
+}) => {
+  const dateWarnings: string[] = [];
+  page.on('console', (message) => {
+    if (message.text().includes('does not conform to the required format')) {
+      dateWarnings.push(message.text());
+    }
+  });
+  await page.goto('/');
+  const driver = page.getByLabel('Driver name', { exact: true });
+  const payer = page.getByLabel('Payer name', { exact: true });
+  const vehicle = page.getByLabel('Vehicle number', { exact: true });
+  await expect(page.locator('[aria-invalid="true"]')).toHaveCount(0);
+  const initialPayerTop = (await payer.boundingBox())?.y;
+  await driver.focus();
+  await payer.focus();
+  await expect(driver).toHaveAttribute('aria-invalid', 'true');
+  await expect(driver).toHaveAccessibleDescription('Enter a driver name.');
+  expect((await payer.boundingBox())?.y).toBe(initialPayerTop);
+  await driver.fill('Asha Example');
+  await expect(driver).not.toHaveAttribute('aria-invalid', 'true');
+  await payer.fill('Morgan Sample');
+  await vehicle.fill('KA03AB123456');
+  await page.locator('#salary-amount').focus();
+  await expect(vehicle).toHaveAccessibleDescription(
+    'Vehicle number must be 10 characters or fewer.',
+  );
+  await vehicle.fill('KA03AB1234');
+  await expect(vehicle).not.toHaveAttribute('aria-invalid', 'true');
+
+  const amount = page.getByLabel('Salary amount', { exact: true });
+  await amount.clear();
+  await page.getByLabel('Currency', { exact: true }).focus();
+  await expect(amount).toHaveAccessibleDescription('Enter a salary amount.');
+  await amount.fill('-1');
+  await expect(amount).toHaveAccessibleDescription('Salary amount must be zero or more.');
+  await amount.fill('12500.5');
+  await expect(amount).not.toHaveAttribute('aria-invalid', 'true');
+
+  const date = page.getByLabel('Payment date', { exact: true });
+  await date.clear();
+  await amount.focus();
+  await expect(date).toHaveAccessibleDescription('Enter a valid payment date.');
+  await page.getByRole('button', { name: 'Print receipt', exact: true }).click();
+  await expect(date).toBeFocused();
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+  await date.fill('2026-11-13');
+  await expect(date).not.toHaveAttribute('aria-invalid', 'true');
+  await expect(page.getByText('Receipt ready to print', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Print receipt', exact: true }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  expect(dateWarnings).toEqual([]);
+});
+
+test('shared dropdowns reserve chevron space and signature positioning stays optional', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.locator('.pk-select-control')).toHaveCount(4);
+  for (const control of await page.locator('.pk-select-control').all()) {
+    const select = control.locator('select');
+    const icon = control.locator('svg');
+    const selectBox = await select.boundingBox();
+    const iconBox = await icon.boundingBox();
+    expect(selectBox).not.toBeNull();
+    expect(iconBox).not.toBeNull();
+    if (!selectBox || !iconBox) throw new Error('Dropdown geometry unavailable.');
+    const inset = selectBox.x + selectBox.width - iconBox.x - iconBox.width;
+    expect(inset).toBeGreaterThanOrEqual(10);
+    const padding = await select.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).paddingInlineEnd),
+    );
+    expect(padding).toBeGreaterThan(iconBox.width + inset);
+    await expect(icon).toHaveAttribute('aria-hidden', 'true');
+  }
+  await page.getByLabel('Driver salutation', { exact: true }).selectOption('Mrs.');
+  await page.getByLabel('Driver salutation', { exact: true }).focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Driver salutation', { exact: true })).toHaveValue('Mrs.');
+  await expect(page.getByLabel('Driver name', { exact: true })).toBeFocused();
+  await page.getByLabel('Driver name', { exact: true }).fill('Asha Example');
+  await expect(page.locator('#signature-x')).toBeHidden();
+  const summary = page.locator('.signature-adjustments summary');
+  await summary.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#signature-x')).toBeVisible();
+  await page.locator('#signature-x').fill('25');
+  await expect(page.getByRole('img', { name: 'Driver signature', exact: true })).toHaveAttribute(
+    'style',
+    /translate\(25px/,
+  );
+});
+
+test('tablet template labels stay within their controls', async ({ page }) => {
+  await page.goto('/');
+  for (const width of [768, 1024, 1100]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const overflow = await page
+      .locator('.template-option__copy strong')
+      .evaluateAll((labels) => labels.some((label) => label.scrollWidth > label.clientWidth));
+    expect(overflow).toBe(false);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+  }
+});
+
 test('Plum & Stone tokens follow the tool theme and keep receipts white', async ({
   page,
 }, testInfo) => {
@@ -47,6 +153,7 @@ test('defaults, required validation, three templates, and signature presentation
     }
   });
   await page.goto('/');
+  await expect(page.getByText('Complete required fields to prepare receipt.')).toBeVisible();
   const appOrigin = new URL(page.url()).origin;
   page.on('request', (request) => {
     if (new URL(request.url()).origin !== appOrigin) externalRequests.push(request.url());
@@ -63,6 +170,12 @@ test('defaults, required validation, three templates, and signature presentation
   await expect(page.locator('#currency option')).toHaveCount(165);
   await expect(page.getByRole('img', { name: 'Revenue stamp' })).toBeVisible();
   await page.getByLabel('Driver name').fill('Asha Example');
+  await page.getByLabel('Payer name').fill('Morgan Sample');
+  await page.getByLabel('Vehicle number').fill('KA03AB1234');
+  await expect(page.getByText('Receipt ready to print')).toBeVisible();
+  await page.getByLabel('Vehicle number').clear();
+  await expect(page.getByText('Complete required fields to prepare receipt.')).toBeVisible();
+  await page.getByLabel('Vehicle number').fill('KA03AB1234');
   await expect(page.getByRole('img', { name: 'Driver signature' })).toBeVisible();
   const currentDate = await page.evaluate(() =>
     new Intl.DateTimeFormat('en-GB', {
@@ -148,6 +261,7 @@ test('print choices, opt-in draft restore, reset, and clear have distinct effect
     ),
   });
   await expect(page.getByRole('img', { name: 'Uploaded signature preview' })).toBeVisible();
+  await page.locator('.signature-adjustments summary').click();
   await page.locator('#signature-x').fill('25');
   await expect(page.getByRole('img', { name: 'Driver signature' })).toHaveAttribute(
     'style',

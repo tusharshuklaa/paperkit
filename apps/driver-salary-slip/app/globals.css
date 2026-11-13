@@ -19,20 +19,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .dark .theme-moon { display: none; }
 .workspace { display: grid; grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr); gap: 32px; padding-top: 28px; align-items: start; }
 .form-panel, .preview-panel { min-width: 0; }
-.section-heading { padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.section-heading { padding-bottom: 24px; }
 .form-panel h2, .preview-heading h2 { margin: 0; font-size: var(--text-lead); font-weight: 650; }
 .section-heading > p { margin: 6px 0 0; color: var(--muted); }
+.section-heading > .section-heading__note { font-size: var(--text-small); }
 .salary-form { display: grid; gap: 20px; }
 .form-section { display: grid; gap: 14px; min-width: 0; margin: 0; padding: 18px 0 0; border: 0; border-top: 1px solid var(--border); }
 .form-section legend { padding: 0 12px 0 0; font-family: var(--font-display); font-size: var(--text-base); font-weight: 650; }
 .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; min-width: 0; }
-.field-grid--people { grid-template-columns: minmax(100px, 0.62fr) minmax(0, 1.38fr); }
+.field-grid--people { grid-template-columns: 124px minmax(0, 1fr); }
 .field-stack { display: grid; align-content: start; gap: 6px; min-width: 0; }
 .pk-field { gap: 6px; }
 .field-label, .pk-field__label { color: var(--text); font-size: var(--text-small); font-weight: 650; }
-.field-error, .pk-field__error { display: block; min-height: var(--status-height); color: var(--error); font-size: var(--text-small); line-height: 1.4; }
-.pk-field__messages { min-height: var(--status-height); }
-.pk-select { appearance: auto; }
+.field-error, .pk-field__error { display: block; min-height: 2.8em; color: var(--error); font-size: var(--text-small); line-height: 1.4; }
+.pk-field__messages { min-height: 2.8em; font-size: var(--text-small); }
+.salary-form .pk-input { min-height: 44px; scroll-margin-block: 24px; }
 .field-optional, .field-hint { color: var(--muted); font-size: var(--text-small); font-weight: 400; }
 .field-hint { margin: 4px 0 0; line-height: 1.4; }
 .declaration-input { min-height: 104px; resize: vertical; }
@@ -53,11 +54,23 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .upload-button input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 .signature-thumbnail { width: 112px; height: 48px; object-fit: contain; background: white; }
 .signature-error { min-height: var(--status-height); margin: 0; }
+.signature-adjustments { min-width: 0; }
+.signature-adjustments summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; color: var(--text); font-size: var(--text-small); font-weight: 650; cursor: pointer; list-style: none; }
+.signature-adjustments summary::-webkit-details-marker { display: none; }
+.signature-adjustments summary:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
+.signature-adjustments summary svg { width: 16px; height: 16px; flex-shrink: 0; }
+.signature-adjustments[open] summary svg { transform: rotate(180deg); }
+.signature-adjustments > .pk-button { margin-top: 12px; }
 .adjustment-list { display: grid; gap: 8px; }
 .range-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 54px; align-items: center; gap: 10px; min-height: 36px; font-size: var(--text-small); }
 .range-row input { width: 100%; accent-color: var(--accent); }
-.range-row output { color: var(--muted); font-family: var(--font-numeric); font-size: var(--text-small); text-align: right; }
+.range-row output { color: var(--muted); font-family: var(--font-numeric); font-size: var(--text-small); font-variant-numeric: tabular-nums; text-align: right; }
 .form-actions { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
+.receipt-status { display: flex; align-items: center; gap: 7px; min-height: 20px; margin: 0; color: var(--muted); font-size: var(--text-small); }
+.receipt-status--ready { color: var(--action); font-weight: 650; }
+.receipt-status__icon { width: 16px; height: 16px; flex: 0 0 16px; animation: receipt-ready-mark-in 220ms cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes receipt-ready-mark-in { from { opacity: 0; transform: scale(.7) rotate(-12deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .receipt-status__icon { animation: none; } }
 .privacy-note { margin: 0; color: var(--muted); font-size: var(--text-small); }
 .print-message { min-height: var(--status-height); color: var(--muted); font-size: var(--text-small); }
 .print-dialog { width: min(calc(100% - 32px), 480px); padding: 0; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text); background: var(--surface); }
@@ -91,14 +104,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .receipt-footer .pk-signature-block__label { color: var(--paper-muted); font-size: var(--text-tiny); }
 .signature-image { display: block; width: min(100%, 190px); height: 62px; object-fit: contain; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 1100px) {
+  .template-options { grid-template-columns: minmax(0, 1fr); }
+  .template-option { min-height: 56px; }
+}
+@media (max-width: 1000px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 760px) {
   .tool-shell { width: min(100% - 28px, 640px); padding-top: 16px; }
   .tool-header { gap: 12px; padding-bottom: 18px; }
   .tool-heading h1 { font-size: var(--text-lead); }
   .workspace { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-top: 22px; }
+  .salary-form .pk-input { font-size: 16px; }
   .template-options { grid-template-columns: minmax(0, 1fr); }
   .template-option { min-height: 56px; }
+  .field-grid--people { grid-template-columns: 112px minmax(0, 1fr); }
   .receipt-paper { padding: 18px; }
+}
+@media (max-width: 400px) {
+  .field-grid:not(.field-grid--people) { grid-template-columns: minmax(0, 1fr); }
+  .signature-upload-row { align-items: flex-start; flex-direction: column; }
 }
 @page { size: A4; margin: 16mm; }
 @media print {

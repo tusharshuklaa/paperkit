@@ -21,7 +21,7 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: createDefaultValues(new Date(`${initialDate}T00:00:00`)),
-    mode: 'onSubmit',
+    mode: 'onTouched',
   });
   const [printMessage, setPrintMessage] = useState('');
   const [printDialogOpen, setPrintDialogOpen] = useState(false);
@@ -147,7 +147,8 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
         <section aria-labelledby="form-title" className="form-panel">
           <div className="section-heading">
             <h2 id="form-title">Receipt details</h2>
-            <p>Enter payment and payer details.</p>
+            <p>Enter the driver, payer, vehicle and salary payment details.</p>
+            <p className="section-heading__note">Declaration and signature image are optional.</p>
           </div>
           <SalarySlipForm
             form={form}

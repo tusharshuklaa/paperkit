@@ -23,7 +23,10 @@ const salaryAmountSchema = z.preprocess(
     return value.trim() === '' ? undefined : Number(value);
   },
   z
-    .number({ invalid_type_error: 'Enter a salary amount.' })
+    .number({
+      required_error: 'Enter a salary amount.',
+      invalid_type_error: 'Enter a salary amount.',
+    })
     .finite('Enter a finite salary amount.')
     .min(0, 'Salary amount must be zero or more.'),
 );
@@ -38,18 +41,22 @@ export const formSchema = z.object({
   driverSalutation: z.enum(['Mr.', 'Mrs.']),
   driverName: z
     .string()
-    .max(50)
+    .max(50, 'Driver name must be 50 characters or fewer.')
     .refine((value) => value.trim().length >= 2, 'Enter a driver name.'),
   payerSalutation: z.enum(['Mr.', 'Mrs.']),
   payerName: z
     .string()
-    .max(50)
+    .max(50, 'Payer name must be 50 characters or fewer.')
     .refine((value) => value.trim().length >= 2, 'Enter a payer name.'),
   vehicleNumber: z
     .string()
-    .max(10)
+    .max(10, 'Vehicle number must be 10 characters or fewer.')
     .refine((value) => value.trim().length >= 2, 'Enter a vehicle number.'),
-  paymentDate: z.date().min(new Date(1900, 0, 1), 'Payment date must be 1 January 1900 or later.'),
+  paymentDate: z
+    .date({
+      errorMap: () => ({ message: 'Enter a valid payment date.' }),
+    })
+    .min(new Date(1900, 0, 1), 'Payment date must be 1 January 1900 or later.'),
   currencyId: z.string().refine((value) => currencyIds.has(value), 'Choose a listed currency.'),
   salaryAmount: salaryAmountSchema,
   salaryMonth: z.enum(months),

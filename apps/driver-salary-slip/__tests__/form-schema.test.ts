@@ -81,9 +81,23 @@ describe('salary slip form schema', () => {
     expect(formSchema.safeParse({ ...validValues(), signatureScale: 0.53 }).success).toBe(false);
   });
 
-  it('requires names and vehicle details only when validated for printing', () => {
+  it('requires names and vehicle details when validated', () => {
     expect(formSchema.safeParse({ ...validValues(), driverName: '' }).success).toBe(false);
     expect(formSchema.safeParse({ ...validValues(), payerName: ' ' }).success).toBe(false);
     expect(formSchema.safeParse({ ...validValues(), vehicleNumber: '' }).success).toBe(false);
+  });
+
+  it('provides actionable errors for empty dates and overlong names or vehicle numbers', () => {
+    for (const [field, value, message] of [
+      ['driverName', 'D'.repeat(51), 'Driver name must be 50 characters or fewer.'],
+      ['payerName', 'P'.repeat(51), 'Payer name must be 50 characters or fewer.'],
+      ['vehicleNumber', 'KA03AB123456', 'Vehicle number must be 10 characters or fewer.'],
+      ['paymentDate', new Date(Number.NaN), 'Enter a valid payment date.'],
+      ['salaryAmount', '', 'Enter a salary amount.'],
+    ] as const) {
+      const result = formSchema.safeParse({ ...validValues(), [field]: value });
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.issues[0]?.message).toBe(message);
+    }
   });
 });
