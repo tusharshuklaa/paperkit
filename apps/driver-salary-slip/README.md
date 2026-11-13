@@ -1,6 +1,6 @@
 # Driver Salary Slip
 
-Independent PaperKit app for preparing a driver's salary receipt. Uses browser printing and the browser's Save as PDF destination; it does not calculate payroll or establish tax, legal, stamp, or signature validity.
+PaperKit tool for preparing a driver's salary receipt. The main PaperKit app hosts it at `/driver-salary-slip`; this workspace also retains a standalone development preview. It uses browser printing and the browser's Save as PDF destination; it does not calculate payroll or establish tax, legal, stamp, or signature validity.
 
 ## Run
 

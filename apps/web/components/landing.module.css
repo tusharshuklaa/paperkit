@@ -4,13 +4,16 @@
   min-height: 100svh;
   isolation: isolate;
 }
-.landing h1, .landing h2, .footerBrand { font-family: var(--font-display); }
-.landing h2 { font-size: var(--landing-section-size); font-weight: 500; line-height: 1.12; }
+.landing main:not(:global(.tool-shell)) h1, .landing main:not(:global(.tool-shell)) h2, .siteChrome h2, .footerBrand { font-family: var(--font-display); }
+.landing main:not(:global(.tool-shell)) h2, .siteChrome h2 { font-size: var(--landing-section-size); font-weight: 500; line-height: 1.12; }
 .landing a, .landing button, .landing summary { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .landing a:focus-visible, .landing button:focus-visible, .landing summary:focus-visible { outline: var(--focus-width) solid currentColor; outline-offset: var(--focus-offset); }
 .landing section[id], .landing main { scroll-margin-top: var(--space-12); }
 .header, .hero, .collection, .faq, .footer { max-width: var(--landing-width); margin-inline: auto; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); padding: var(--space-10) var(--landing-gutter); }
+.identity { display: flex; align-items: center; gap: var(--space-6); min-width: 0; }
+.breadcrumb { color: var(--muted); font-size: var(--text-small); }
+.breadcrumb span { color: var(--text); }
 .wordmark { display: inline-flex; gap: var(--space-4); align-items: center; min-height: var(--control-height); font-size: 25px; font-weight: 750; }
 .wordmark svg { width: 26px; height: 26px; stroke-width: 1.7; }
 .header nav { display: flex; gap: var(--space-16); margin-left: auto; }
@@ -104,6 +107,10 @@
 @media (max-width: 639px) {
   .landing { --landing-gutter: 20px; --landing-wordmark-size: 76px; --landing-statement-size: 42px; --landing-section-size: 32px; }
   .header { padding-block: var(--space-6); gap: var(--space-4); }
+  .header:has(.breadcrumb) { flex-wrap: wrap; }
+  .header:has(.breadcrumb) .identity { flex-basis: 100%; }
+  .header:has(.breadcrumb) nav { margin-left: 0; }
+  .header:has(.breadcrumb) > button { margin-left: auto; }
   .wordmark { font-size: 21px; }
   .wordmark svg { width: var(--space-12); height: var(--space-12); }
   .header nav { gap: var(--space-6); font-size: var(--text-small); }
@@ -139,6 +146,9 @@
   .footerBrand { font-size: 56px; }
   .footer nav { margin-top: var(--space-10); }
   .footer > span:last-child { display: block; margin-top: var(--space-8); }
+}
+@media print {
+  .siteChrome { display: none !important; }
 }
 @media (max-width: 359px) {
   .landing { --landing-wordmark-size: 68px; --landing-statement-size: 36px; }

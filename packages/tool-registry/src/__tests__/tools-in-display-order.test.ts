@@ -24,10 +24,19 @@ describe('toolsInDisplayOrder', () => {
     expect(toolsInDisplayOrder([live])).toEqual([live]);
   });
 
+  test('accepts same-origin paths', () => {
+    expect(toolsInDisplayOrder([{ ...tools[0], status: 'live', href: '/generator' }])).toHaveLength(
+      1,
+    );
+  });
+
   test.each([
     undefined,
     '',
-    '/generator',
+    '//generator.example.test',
+    '/\\generator.example.test',
+    '/\u0000/generator.example.test',
+    '/some path',
     'https:generator.example.test',
     'https:/generator.example.test',
     'not a URL',
@@ -43,7 +52,7 @@ describe('toolsInDisplayOrder', () => {
 
   test('rejects runtime coming-soon navigation, including undefined', () => {
     for (const href of ['https://generator.example.test', undefined]) {
-      const invalid = { ...tools[0], href } as unknown as Tool;
+      const invalid = { ...tools[1], href } as unknown as Tool;
       expect(() => toolsInDisplayOrder([invalid])).toThrow();
     }
   });

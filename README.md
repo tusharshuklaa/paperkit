@@ -1,12 +1,14 @@
 # PaperKit
 
-PaperKit's Platform Shell introduces browser-based document Tools and lists their availability in a registry-driven Catalog. Salary-slip, fuel-receipt, and rent-receipt Tools currently remain **Coming Soon**. The sample document is an illustration, not a working generator.
+PaperKit's Platform Shell introduces browser-based document Tools and lists their availability in a registry-driven Catalog. Driver Salary Slip is available at `/driver-salary-slip`; fuel and rent receipt Tools remain **Coming Soon**. Catalog samples are illustrations, not generated documents. Production deployment has not yet been verified.
 
 ## Layout
 
 ```text
 apps/web/                       Next.js Platform Shell, metadata and shell checks
+apps/driver-salary-slip/        Driver salary receipt tool and standalone development preview
 packages/ui/                    Shared React primitives and built CSS
+packages/platform-shell/        Shared platform header, footer, theme control, and styles
 packages/tailwind-config/       Shared tokens; repo-wide Biome command owner
 packages/typescript-config/     Shared TypeScript configurations
 packages/tool-registry/         Typed Tool availability and display ordering
@@ -70,14 +72,12 @@ Fallow uses pinned local binary, styling analytics, advisory `css-token-drift`, 
 
 Do not scaffold a generator merely to fill the Catalog. When a real Tool is ready for implementation:
 
-1. Add a separate Next.js application under `apps/<slug>` with its own package name, runtime dependencies, and `dev`, `build`, `start`, `typecheck`, and preserved `check-types` scripts. Follow existing Next.js/React and Tailwind workspace conventions. Keep generator screens out of `apps/web`.
-2. Consume shared packages with `workspace:*`: runtime imports belong in the application's dependencies; TypeScript/Tailwind tooling belongs in its dev dependencies. Use `@repo/ui`, `@repo/tool-registry`, `@repo/tailwind-config`, and `@repo/typescript-config` rather than copying foundations. `@repo/document-engine` is empty until a concrete generation requirement exists.
-3. Build UI before consuming its `dist` exports. Import `@repo/ui/styles.css` once in the app layout; it includes shared tokens. Import components through public paths such as `@repo/ui/Button`. Extend `@repo/typescript-config/nextjs.json`; consult [shared UI contract](packages/ui/README.md) for form associations and native props.
-4. Build and deploy the app independently, with workspace root as install context so workspace dependencies resolve. For example, `rtk proxy bun run build --filter='<tool-package-name>'` forwards filter to root Turbo build, including prerequisite shared builds. Configure provider-specific output/start settings for that app; no hosting provider, shared-domain rewrites, or runtime composition is prescribed.
-5. Verify the deployed HTTPS destination opens the working generator, including redirects, ownership, expected behavior, and mobile/keyboard access. Record release-owner verification in review. URL syntax validation cannot establish availability.
-6. Add or update a Tool in [registry data](packages/tool-registry/src/tools.ts), using public `Tool` contract, approved category, format, icon and display order. Keep `status: 'coming-soon'` without `href` until verified. Only then set `status: 'live'` and credential-free HTTPS `href`. Registry drives Catalog; no shell edit is required. Run public registry, consumer, typecheck, lint, build and browser checks.
+1. Keep tool-specific components and logic under `apps/<slug>` and add a route under `apps/web/app/<slug>` for the single PaperKit deployment. Reuse the shared platform header and footer; keep them out of printed output.
+2. Declare workspace dependencies so builds track tool source changes. Reuse `@repo/ui` and other shared packages instead of copying foundations.
+3. Register the tool in [registry data](packages/tool-registry/src/tools.ts). Use a same-origin path for a working local route; keep unfinished tools `coming-soon` without an `href`.
+4. Verify the route, navigation, responsive behavior, accessibility, and output locally. Before public release, verify the real HTTPS deployment and configure its canonical origin.
 
-See [separate-app decision](docs/adr/0001-separate-tool-apps.md) and [registry contract](packages/tool-registry/README.md).
+See [single-domain decision](docs/adr/0002-single-domain-tools.md) and [registry contract](packages/tool-registry/README.md).
 
 ## Release Configuration
 

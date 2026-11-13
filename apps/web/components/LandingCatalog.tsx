@@ -1,7 +1,7 @@
+import styles from '@repo/platform-shell/landing.module.css';
 import { toolsInDisplayOrder } from '@repo/tool-registry';
 import { ArrowUpRight, Car, Fuel, House } from 'lucide-react';
 import { DocumentSample, type DocumentSampleKind } from './DocumentSample';
-import styles from './landing.module.css';
 
 const presentation = {
   car: {

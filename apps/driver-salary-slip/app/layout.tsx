@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider } from '@driver/components/ThemeProvider';
 import type { Metadata } from 'next';
 import { Bricolage_Grotesque, Caveat, JetBrains_Mono, Manrope } from 'next/font/google';
 import './globals.css';

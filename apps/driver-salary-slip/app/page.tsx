@@ -1,4 +1,7 @@
-import { DriverSalarySlip } from '@/components/DriverSalarySlip';
+import { DriverSalarySlip } from '@driver/components/DriverSalarySlip';
+import { PlatformFooter } from '@repo/platform-shell/PlatformFooter';
+import { PlatformHeader } from '@repo/platform-shell/PlatformHeader';
+import styles from '@repo/platform-shell/landing.module.css';
 
 function localDateKey(date: Date): string {
   const year = date.getFullYear();
@@ -8,5 +11,11 @@ function localDateKey(date: Date): string {
 }
 
 export default function DriverSalarySlipPage() {
-  return <DriverSalarySlip initialDate={localDateKey(new Date())} />;
+  return (
+    <div className={styles.landing}>
+      <PlatformHeader toolName="Driver Salary Slip" />
+      <DriverSalarySlip initialDate={localDateKey(new Date())} />
+      <PlatformFooter />
+    </div>
+  );
 }

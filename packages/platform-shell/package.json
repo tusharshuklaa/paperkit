@@ -1,0 +1,20 @@
+{
+  "name": "@repo/platform-shell",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./PlatformHeader": "./src/PlatformHeader.tsx",
+    "./PlatformFooter": "./src/PlatformFooter.tsx",
+    "./ThemeControl": "./src/ThemeControl.tsx",
+    "./landing.module.css": "./src/landing.module.css"
+  },
+  "dependencies": {
+    "@repo/tool-registry": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "lucide-react": "^0.468.0",
+    "next-themes": "^0.4.6"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

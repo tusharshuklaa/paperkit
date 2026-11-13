@@ -1,4 +1,4 @@
-import type { ReceiptData } from '@/lib/driver-salary-slip/receipt-data';
+import type { ReceiptData } from '@driver/lib/driver-salary-slip/receipt-data';
 import { PaperSheet } from '@repo/ui/PaperSheet';
 import { ReceiptTemplate1 } from './ReceiptTemplate1';
 import { ReceiptTemplate2 } from './ReceiptTemplate2';

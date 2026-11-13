@@ -1,8 +1,8 @@
 'use client';
 
-import { currencyOptions } from '@/lib/driver-salary-slip/currency-options';
-import { type FormValues, formSchema } from '@/lib/driver-salary-slip/form-schema';
-import { readSignatureImage } from '@/lib/driver-salary-slip/read-signature-image';
+import { currencyOptions } from '@driver/lib/driver-salary-slip/currency-options';
+import { type FormValues, formSchema } from '@driver/lib/driver-salary-slip/form-schema';
+import { readSignatureImage } from '@driver/lib/driver-salary-slip/read-signature-image';
 import { Button } from '@repo/ui/Button';
 import { FieldWrapper } from '@repo/ui/FieldWrapper';
 import { Input } from '@repo/ui/Input';

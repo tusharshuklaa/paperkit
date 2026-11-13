@@ -10,6 +10,7 @@ afterEach(() => {
 
 test('omits JSON-LD without an origin or without live Tools', () => {
   expect(toolListJsonLd()).toBeUndefined();
+  tools.splice(0, 1);
   expect(toolListJsonLd(new URL('https://shell.example.test'))).toBeUndefined();
 });
 
@@ -36,12 +37,12 @@ test('publishes only synthetic live Tools in stable display order', () => {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     url: 'https://shell.example.test/',
-    itemListElement: [earlier, later].map((tool, index) => ({
+    itemListElement: [tools[0], earlier, later].map((tool, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: tool.name,
       description: tool.description,
-      url: tool.href,
+      url: new URL(tool.href as string, 'https://shell.example.test').href,
     })),
   });
 });

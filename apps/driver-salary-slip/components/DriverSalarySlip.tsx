@@ -1,14 +1,13 @@
 'use client';
 
-import { PrintDialog } from '@/components/PrintDialog';
-import { ReceiptPreview } from '@/components/ReceiptPreview';
-import { SalarySlipForm } from '@/components/SalarySlipForm';
-import { ThemeControl } from '@/components/ThemeControl';
-import { useSignatureImage } from '@/hooks/useSignatureImage';
-import { createDefaultValues } from '@/lib/driver-salary-slip/create-default-values';
-import { draftStorage } from '@/lib/driver-salary-slip/draft-storage';
-import { type FormValues, formSchema } from '@/lib/driver-salary-slip/form-schema';
-import { receiptDataFromForm } from '@/lib/driver-salary-slip/receipt-data';
+import { PrintDialog } from '@driver/components/PrintDialog';
+import { ReceiptPreview } from '@driver/components/ReceiptPreview';
+import { SalarySlipForm } from '@driver/components/SalarySlipForm';
+import { useSignatureImage } from '@driver/hooks/useSignatureImage';
+import { createDefaultValues } from '@driver/lib/driver-salary-slip/create-default-values';
+import { draftStorage } from '@driver/lib/driver-salary-slip/draft-storage';
+import { type FormValues, formSchema } from '@driver/lib/driver-salary-slip/form-schema';
+import { receiptDataFromForm } from '@driver/lib/driver-salary-slip/receipt-data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { type FieldPath, useForm, useWatch } from 'react-hook-form';
@@ -133,16 +132,7 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
 
   return (
     <main className="tool-shell">
-      <header className="tool-header">
-        <span aria-hidden="true" className="brand-mark">
-          PK
-        </span>
-        <div className="tool-heading">
-          <p className="eyebrow">PaperKit / Document tools</p>
-          <h1>Driver Salary Slip</h1>
-        </div>
-        <ThemeControl />
-      </header>
+      <h1 className="tool-title">Driver Salary Slip</h1>
       <div className="workspace">
         <section aria-labelledby="form-title" className="form-panel">
           <div className="section-heading">

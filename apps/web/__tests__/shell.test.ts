@@ -76,7 +76,10 @@ test('approved shell content, Catalog availability, and real anchors', async ({ 
   const cards = catalog.getByRole('article');
   await expect(cards).toHaveCount(3);
   await expect(cards.getByRole('heading')).toHaveText(toolNames);
-  for (const card of await cards.all()) {
+  await expect(
+    cards.first().getByRole('link', { name: 'Open Driver Salary Slip' }),
+  ).toHaveAttribute('href', '/driver-salary-slip');
+  for (const card of await cards.all().then((items) => items.slice(1))) {
     await expect(card.getByText('Coming Soon', { exact: true })).toBeVisible();
     await expect(card.getByRole('link')).toHaveCount(0);
     await expect(card.getByRole('button')).toHaveCount(0);
@@ -104,8 +107,63 @@ test('approved shell content, Catalog availability, and real anchors', async ({ 
   await expect(page.locator('a[href="#"]')).toHaveCount(0);
   await page.getByText('Can I create a document today?', { exact: true }).click();
   await expect(
-    page.getByText('Not yet. All tools in the catalog are Coming Soon.', { exact: false }),
+    page.getByText('Available tools are linked in the catalog.', { exact: false }),
   ).toBeVisible();
+});
+
+test('live driver tool shares navigation, footer, theme, and receipt-only print', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Open Driver Salary Slip' }).click();
+  await expect(page).toHaveURL(/\/driver-salary-slip$/);
+  const header = page.getByRole('banner');
+  await expect(header.getByRole('link', { name: 'PaperKit home' })).toHaveAttribute('href', '/');
+  await expect(header.getByText('Driver Salary Slip')).toBeVisible();
+  await expect(header.getByRole('link', { name: 'Tools' })).toHaveAttribute(
+    'href',
+    '/#tool-catalog',
+  );
+  await expect(header.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/#about');
+  await expect(page.getByRole('heading', { name: 'Receipt details' })).toHaveCSS(
+    'font-size',
+    '18px',
+  );
+  await expect(page.getByRole('heading', { name: 'Less admin. More everyday.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'A few useful answers.' })).toBeVisible();
+  await expect(page.locator('.receipt-stamp img')).toHaveJSProperty('complete', true);
+  expect(
+    await page
+      .locator('.receipt-stamp img')
+      .evaluate((image: HTMLImageElement) => image.naturalWidth),
+  ).toBeGreaterThan(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    page.viewportSize()?.width ?? 0,
+  );
+  await page.emulateMedia({ media: 'print' });
+  await expect(header).toBeHidden();
+  await expect(
+    page.getByRole('heading', { name: 'Less admin. More everyday.', includeHidden: true }),
+  ).toBeHidden();
+  await expect(page.locator('.receipt-paper')).toBeVisible();
+  await page.emulateMedia({ media: 'screen' });
+  await header.getByRole('link', { name: 'Tools' }).click();
+  await expect(page).toHaveURL(/\/#tool-catalog$/);
+});
+
+test('integrated driver tool fills and prints a receipt', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.print = () => localStorage.setItem('test-printed', 'yes');
+  });
+  await page.goto('/driver-salary-slip');
+  await page.getByLabel('Driver name', { exact: true }).fill('Asha Example');
+  await page.getByLabel('Payer name', { exact: true }).fill('Morgan Sample');
+  await page.getByLabel('Vehicle number', { exact: true }).fill('KA03AB1234');
+  await page.getByLabel('Salary amount', { exact: true }).fill('12500');
+  await expect(page.locator('.receipt-paper')).toContainText('Asha Example');
+  await page.getByRole('button', { name: 'Print receipt' }).click();
+  await page.getByRole('button', { name: 'Just Print' }).click();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('test-printed'))).toBe('yes');
 });
 
 test('system theme and persistent native toggle preserve visible content and amounts', async ({

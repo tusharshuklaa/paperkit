@@ -1,9 +1,9 @@
 'use client';
 
+import styles from '@repo/platform-shell/landing.module.css';
 import { Check, FileText, Fuel, House } from 'lucide-react';
 import { useState } from 'react';
 import { DocumentSample, type DocumentSampleKind } from './DocumentSample';
-import styles from './landing.module.css';
 
 type DocumentShowcaseProps = {
   samples: { kind: DocumentSampleKind; label: string; name: string }[];

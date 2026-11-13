@@ -1,14 +1,12 @@
 import type { ComingSoonTool, Tool } from './tool';
 
-const comingSoon = (
-  tool: Omit<ComingSoonTool, 'status'>,
-): ComingSoonTool => ({
+const comingSoon = (tool: Omit<ComingSoonTool, 'status'>): ComingSoonTool => ({
   ...tool,
   status: 'coming-soon',
 });
 
 export const tools: Tool[] = [
-  comingSoon({
+  {
     id: 'salary-slip',
     name: 'Driver Salary Slip',
     description:
@@ -17,7 +15,9 @@ export const tools: Tool[] = [
     format: 'A4 · SLIP',
     icon: 'car',
     order: 1,
-  }),
+    status: 'live',
+    href: '/driver-salary-slip',
+  },
   comingSoon({
     id: 'petrol-receipt',
     name: 'Petrol & Fuel Receipt',

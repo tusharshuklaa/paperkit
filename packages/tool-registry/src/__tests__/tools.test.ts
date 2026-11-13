@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { CATEGORY_LABELS, tools } from '@repo/tool-registry';
 
-test('ships exactly the three approved Coming Soon Tools', () => {
+test('ships the live driver tool and two Coming Soon tools', () => {
   expect(tools).toEqual([
     {
       id: 'salary-slip',
@@ -12,7 +12,8 @@ test('ships exactly the three approved Coming Soon Tools', () => {
       format: 'A4 · SLIP',
       icon: 'car',
       order: 1,
-      status: 'coming-soon',
+      status: 'live',
+      href: '/driver-salary-slip',
     },
     {
       id: 'petrol-receipt',
@@ -42,7 +43,7 @@ test('ships exactly the three approved Coming Soon Tools', () => {
     'expense-proof': 'Expense Proof',
     'tax-exemption': 'Tax Exemption · 10(13A)',
   });
-  for (const tool of tools) {
+  for (const tool of tools.slice(1)) {
     expect(tool).not.toHaveProperty('href');
   }
 });

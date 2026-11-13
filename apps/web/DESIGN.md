@@ -59,7 +59,7 @@ White paper and fixed dark/muted paper inks survive theme changes.
 
 ## Typography
 
-Manrope body, Bricolage Grotesque display, JetBrains Mono shared numeric compatibility; all loaded in [layout](app/layout.tsx). Landing paper uses Manrope tabular figures, not a mono override. Frontmatter sizes are base desktop roles; responsive wordmark (208/144/76/68px), statement (60/42/36px), and local section sizes follow [landing styles](components/landing.module.css). Shared body remains (14px / 1.6), landing body (16px / 1.65). Source Sans 3 is not loaded.
+Manrope body, Bricolage Grotesque display, JetBrains Mono shared numeric compatibility; all loaded in [layout](app/layout.tsx). Landing paper uses Manrope tabular figures, not a mono override. Frontmatter sizes are base desktop roles; responsive wordmark (208/144/76/68px), statement (60/42/36px), and local section sizes follow [landing styles](../../packages/platform-shell/src/landing.module.css). Shared body remains (14px / 1.6), landing body (16px / 1.65). Source Sans 3 is not loaded.
 
 **The Stable Type Rule.** Letter spacing stays zero; interactive state changes do not change font weight. Breakpoint steps, not viewport-scaled font sizes, control display type.
 

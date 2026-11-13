@@ -1,5 +1,6 @@
-import type { ReceiptData } from '@/lib/driver-salary-slip/receipt-data';
+import type { ReceiptData } from '@driver/lib/driver-salary-slip/receipt-data';
 import { SignatureBlock } from '@repo/ui/SignatureBlock';
+import revenueStamp from '../public/revenue.jpg';
 
 type ReceiptFooterProps = {
   data: ReceiptData;
@@ -12,7 +13,7 @@ export function ReceiptFooter({ data }: ReceiptFooterProps) {
         {data.stampEnabled ? (
           <>
             <strong>Revenue Stamp</strong>
-            <img alt="Revenue stamp" height="70" src="/revenue.jpg" width="60" />
+            <img alt="Revenue stamp" height="70" src={revenueStamp.src} width="60" />
           </>
         ) : null}
       </div>

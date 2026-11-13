@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Bricolage_Grotesque, JetBrains_Mono, Manrope } from 'next/font/google';
+import { Bricolage_Grotesque, Caveat, JetBrains_Mono, Manrope } from 'next/font/google';
 import { ThemeProvider } from '../components/ThemeProvider';
 import { canonicalOrigin } from '../lib/canonical-origin';
 import './globals.css';
@@ -19,12 +19,12 @@ const jetbrains = JetBrains_Mono({
   variable: '--font-jetbrains',
   display: 'swap',
 });
+const caveat = Caveat({ subsets: ['latin'], variable: '--font-signature', display: 'swap' });
 const origin = canonicalOrigin();
 
 export const metadata: Metadata = {
   title: 'PaperKit | Everyday document tools',
-  description:
-    'Explore upcoming salary slip, fuel receipt, and house rent receipt tools. Browse illustrative document samples and check tool availability.',
+  description: 'Create a driver salary slip and explore upcoming fuel and rent receipt tools.',
   ...(origin
     ? {
         metadataBase: origin,
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${bricolage.variable} ${jetbrains.variable}`}
+      className={`${manrope.variable} ${bricolage.variable} ${jetbrains.variable} ${caveat.variable}`}
       suppressHydrationWarning
     >
       <body>

@@ -15,7 +15,7 @@ export function toolListJsonLd(origin?: URL) {
       position: index + 1,
       name: tool.name,
       description: tool.description,
-      url: tool.href,
+      url: new URL(tool.href, origin).href,
     })),
   };
 }

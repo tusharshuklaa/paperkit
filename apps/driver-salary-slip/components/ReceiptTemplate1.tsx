@@ -1,4 +1,4 @@
-import type { ReceiptData } from '@/lib/driver-salary-slip/receipt-data';
+import type { ReceiptData } from '@driver/lib/driver-salary-slip/receipt-data';
 import { DocumentHeader } from '@repo/ui/DocumentHeader';
 import { ReceiptFooter } from './ReceiptFooter';
 
