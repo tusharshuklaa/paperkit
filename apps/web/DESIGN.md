@@ -3,11 +3,11 @@
   "name": "PaperKit",
   "description": "Finalized Paper Index world with Good on paper document stacks.",
   "colors": {
-    "canvas": "#f3f5ef", "surface": "#ffffff", "surface-alt": "#dce5d6",
-    "border": "#b6c8b7", "text": "#173c30", "muted": "#4b6256",
-    "accent": "#1c513d", "paper": "#ffffff", "paper-ink": "#222c26",
+    "canvas": "#f6f5f5", "surface": "#ffffff", "surface-alt": "#e7dce5",
+    "border": "#c7b7c4", "text": "#382c3a", "muted": "#645464",
+    "accent": "#75496c", "paper": "#ffffff", "paper-ink": "#222c26",
     "paper-muted": "#5a625d", "paper-rule": "#dce2dc",
-    "fuel-field": "#e6dfd8", "rent-field": "#d8e5e9"
+    "fuel-field": "#e7e0d9", "rent-field": "#dce6e5"
   },
   "typography": {
     "display": {"fontFamily": "Bricolage Grotesque, sans-serif", "fontSize": "176px", "fontWeight": 600, "lineHeight": 1.1, "letterSpacing": "0px"},
@@ -33,12 +33,12 @@
 
 **Creative North Star: "Paper Index"**
 
-PaperKit is an open, editorial index of everyday paperwork. Pale green fields and forest ink frame actual semantic HTML documents; monumental brand typography provides identity without decorative imagery. Document sheets supply visual media, not raster assets.
+PaperKit is an open, editorial index of everyday paperwork. Plum fields and stone neutrals frame actual semantic HTML documents; monumental brand typography provides identity without decorative imagery. Document sheets supply visual media, not raster assets.
 
-Derived tooling view of sole [design authority](../../reference/paperkit/DESIGN.md), not an independent specification. Frontmatter mirrors authority tokens exactly; default-light values derive from [shared CSS](../../packages/tailwind-config/shared-styles.css). [Token inventory](../../DESIGN_TOKENS.md) records dark overrides and compatibility values. [Sidecar](.impeccable/design.json) extends frontmatter with motion, shadows, breakpoints and source-backed previews. Refresh from implemented approved system changes.
+This document records the approved design direction for the shared PaperKit ecosystem. Default-light values derive from [shared CSS](../../packages/tailwind-config/shared-styles.css), the runtime source of truth. [Token inventory](../../DESIGN_TOKENS.md) records dark overrides and compatibility values. [Sidecar](.impeccable/design.json) extends frontmatter with motion, shadows, breakpoints and source-backed previews.
 
 **Key Characteristics:**
-- Pale green fields with forest ink.
+- Plum fields, stone canvas and deep plum ink.
 - Monumental Bricolage Grotesque paired with Manrope.
 - White semantic document sheets as visual media.
 - Restrained fan-and-lift motion with stable selection geometry.
@@ -47,7 +47,7 @@ Derived tooling view of sole [design authority](../../reference/paperkit/DESIGN.
 
 ### Primary
 
-Forest ink and accent on pale canvas and green alternate surface. Muted warm fuel and cool rent fields distinguish illustrations, not action colors. Dark shell uses shared overrides; default-light frontmatter is not a fixed shell palette.
+Plum ink and accent on a pale stone canvas and soft plum alternate surface. Dark mode uses deep plum surfaces and light plum accents; it is not a mechanical inversion. Muted warm fuel and cool rent fields distinguish illustrations, not action colors. Green is reserved for semantic success, not brand styling. Use shared semantic tokens across the landing and tool apps; default-light frontmatter is not a fixed shell palette.
 
 ### Neutral
 
@@ -59,7 +59,7 @@ White paper and fixed dark/muted paper inks survive theme changes.
 
 ## Typography
 
-Manrope body, Bricolage Grotesque display, JetBrains Mono shared numeric compatibility; all loaded in [layout](app/layout.tsx). Landing paper uses Manrope tabular figures, not a mono override. Frontmatter sizes are base desktop roles; responsive wordmark (208/144/76/68px), statement (60/42/36px), and local section sizes follow [landing styles](components/landing.module.css). Shared body remains (14px / 1.6), landing body (16px / 1.65). Source Sans 3 is not loaded.
+Manrope body, Bricolage Grotesque display, JetBrains Mono shared numeric compatibility; all loaded in [layout](app/layout.tsx). Landing paper uses Manrope tabular figures, not a mono override. Frontmatter sizes are base desktop roles; responsive wordmark (208/144/76/68px), statement (60/42/36px), and local section sizes follow [landing styles](../../packages/platform-shell/src/landing.module.css). Shared body remains (14px / 1.6), landing body (16px / 1.65). Source Sans 3 is not loaded.
 
 **The Stable Type Rule.** Letter spacing stays zero; interactive state changes do not change font weight. Breakpoint steps, not viewport-scaled font sizes, control display type.
 

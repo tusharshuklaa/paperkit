@@ -1,6 +1,6 @@
 # Platform Shell
 
-PaperKit's public introduction and discovery context for browser-based document generators.
+PaperKit's shared public experience for discovering and using browser-based document generators.
 
 ## Language
 
@@ -8,7 +8,7 @@ PaperKit's public introduction and discovery context for browser-based document 
 A free platform of browser-based document generators, including salary slips, fuel receipts, and rent receipts.
 
 **Platform Shell**:
-The public-facing introduction and catalog through which visitors discover PaperKit's document generators.
+The shared PaperKit experience through which visitors discover and use document generators, including platform navigation, information, and the catalog.
 _Avoid_: Generator, document editor
 
 **Catalog**:

@@ -10,6 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: origin.href },
     ...toolsInDisplayOrder()
       .filter((tool) => tool.status === 'live')
-      .map((tool) => ({ url: tool.href })),
+      .map((tool) => ({ url: new URL(tool.href, origin).href })),
   ];
 }

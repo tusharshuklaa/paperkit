@@ -12,17 +12,17 @@ Individuals handling everyday salary, rent, and fuel paperwork.
 
 ## Product Purpose
 
-Introduce PaperKit's browser-based document Tools and let visitors browse upcoming Tools.
+Introduce PaperKit's browser-based document Tools and let visitors discover and use available Tools.
 Landing-page success means visitors understand the document categories and their actual availability.
 
 ## Positioning
 
 Everyday document utilities presented through a shared Platform Shell and registry-driven Catalog.
-Independent Tool applications will own generation; the shell does not generate documents.
+Tool-specific code owns generation; one PaperKit deployment hosts the platform and Tool routes.
 
 ## Capabilities and Constraints
 
-Salary-slip, fuel-receipt, and rent-receipt Tools currently remain Coming Soon.
+Driver Salary Slip is Live locally; fuel-receipt and rent-receipt Tools remain Coming Soon.
 Sample documents are illustrations, not generated outputs or working generators.
 Do not invent customer proof, availability, pricing, privacy guarantees, or performance claims.
 Keep financial sample values deterministic and arithmetically correct.
@@ -30,19 +30,19 @@ Keep financial sample values deterministic and arithmetically correct.
 ## Brand Commitments
 
 Keep PaperKit name and truthful Tool status. User selected final production Paper Index A + B
-Good on paper: monumental PaperKit heading, pale green/forest fields, two rotated semantic
+Good on paper: monumental PaperKit heading, Plum & Stone fields, two rotated semantic
 document samples, and restrained fan-and-lift hover/focus motion.
 Manrope body, Bricolage Grotesque display and shared JetBrains Mono numeric compatibility.
 Themes preserve fixed white paper. Document HTML is visual media; no raster assets ship.
 Discard blue legacy styling, dotted/gradient landing backgrounds and prototype alternatives.
-Sole visual authority: [reference DESIGN](../../reference/paperkit/DESIGN.md).
-[App DESIGN](DESIGN.md) and sidecar are derived tooling views, not independent authority.
+Visual authority: [DESIGN](DESIGN.md); [shared CSS](../../packages/tailwind-config/shared-styles.css)
+owns runtime tokens and the sidecar records tooling details.
 
 ## Evidence on Hand
 
 Production landing, typed Tool registry, semantic salary/fuel/rent document samples.
 Historical reference assets do not define selected production styling.
-No verified testimonials, customer logos, commercial statistics, or working generators.
+No verified testimonials, customer logos, or commercial statistics. Production deployment is not yet verified.
 
 ## Product Principles
 
@@ -55,12 +55,11 @@ No verified testimonials, customer logos, commercial statistics, or working gene
 ## Resolved Decision
 
 Visual direction is selected and implemented: Paper Index A + B Good on paper,
-including stacked papers and hover animation. Prototype exploration is complete;
-prototype removal belongs to implementation owner, not a documentation-only deletion claim.
+including stacked papers and hover animation, with the selected Plum & Stone palette.
 Sample selection and catalog derive from Tool registry through explicit presentation mappings.
-All three Tools remain Coming Soon; selection does not enable generation.
+Driver Salary Slip is linked from the Catalog; sample selection remains illustrative.
 
 ## Open Decisions
 
-Tool release timing and generation behavior remain outside landing implementation.
+Production hosting and release timing remain open.
 Historical privacy and free-service claims remain unverified, not production promises.

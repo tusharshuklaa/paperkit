@@ -7,7 +7,12 @@ function validateDestination(tool: Tool) {
     return;
   }
   if (tool.status !== 'live') throw new TypeError('Unknown Tool availability status');
-  if (typeof tool.href !== 'string') throw new TypeError('Live Tools require an HTTPS href');
+  if (typeof tool.href !== 'string') throw new TypeError('Live Tools require a destination');
+  const hasControlCharacter = Array.from(tool.href).some((character) => {
+    const code = character.charCodeAt(0);
+    return code < 32 || code === 127;
+  });
+  if (!hasControlCharacter && /^\/(?!\/)[^\\\s]*$/.test(tool.href)) return;
   const destination = new URL(tool.href);
   if (
     destination.protocol !== 'https:' ||
@@ -15,7 +20,9 @@ function validateDestination(tool: Tool) {
     destination.username ||
     destination.password
   ) {
-    throw new TypeError(`Live Tool ${tool.id} requires a credential-free HTTPS href`);
+    throw new TypeError(
+      `Live Tool ${tool.id} requires a same-origin path or credential-free HTTPS href`,
+    );
   }
 }
 

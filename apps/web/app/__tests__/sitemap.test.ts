@@ -24,6 +24,7 @@ test('returns no sitemap entries without configured origin, even with live Tools
 
 test('lists the shell only when every Tool is Coming Soon', () => {
   process.env.PAPERKIT_CANONICAL_ORIGIN = 'https://shell.example.test';
+  tools.splice(0, 1);
   expect(sitemap()).toEqual([{ url: 'https://shell.example.test/' }]);
 });
 
@@ -47,6 +48,7 @@ test('lists the shell and only validated live destinations in display order', ()
   );
   expect(sitemap()).toEqual([
     { url: 'https://shell.example.test/' },
+    { url: 'https://shell.example.test/driver-salary-slip' },
     { url: 'https://earlier.example.test/create' },
     { url: 'https://later.example.test/create' },
   ]);

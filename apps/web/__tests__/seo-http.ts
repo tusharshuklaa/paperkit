@@ -62,11 +62,12 @@ try {
   );
   assert.equal(structured['@type'], 'ItemList');
   assert.equal(structured.url, `${origin}/`);
-  assert.equal(structured.itemListElement.length, 1);
-  assert.equal(structured.itemListElement[0].url, destination);
-  assert.equal(structured.itemListElement[0].name, 'Synthetic HTTP fixture');
+  assert.equal(structured.itemListElement.length, 2);
+  assert.equal(structured.itemListElement[0].url, `${origin}/driver-salary-slip`);
+  assert.equal(structured.itemListElement[1].url, destination);
+  assert.equal(structured.itemListElement[1].name, 'Synthetic HTTP fixture');
   const catalog = page.getByRole('region', { name: "For life's paperwork." });
-  assert.equal(await catalog.getByText('Coming Soon', { exact: true }).count(), 3);
+  assert.equal(await catalog.getByText('Coming Soon', { exact: true }).count(), 2);
   assert.equal(
     await catalog.getByRole('link', { name: 'Open Synthetic HTTP fixture' }).getAttribute('href'),
     destination,
@@ -80,7 +81,17 @@ try {
       ),
     await sitemap.text(),
   );
-  assert.deepEqual(locations, [`${origin}/`, destination]);
+  assert.deepEqual(locations, [`${origin}/`, `${origin}/driver-salary-slip`, destination]);
+  const toolResponse = await page.goto('http://127.0.0.1:3103/driver-salary-slip');
+  assert.equal(toolResponse?.status(), 200);
+  assert.equal(
+    await page.locator('link[rel="canonical"]').getAttribute('href'),
+    `${origin}/driver-salary-slip`,
+  );
+  assert.equal(
+    await page.locator('meta[property="og:url"]').getAttribute('content'),
+    `${origin}/driver-salary-slip`,
+  );
   console.log(
     'PASS configured-origin HTTP metadata, sitemap, registry-driven discovery and Live-only JSON-LD',
   );
@@ -90,5 +101,5 @@ try {
   if (server) await server.exited;
   await writeFile(registryPath, original);
   await build(environment);
-  console.log('RESTORED original Coming Soon registry and no-origin preview build');
+  console.log('RESTORED original registry and no-origin preview build');
 }

@@ -1,18 +1,24 @@
-import type { Tool } from './tool';
+import type { ComingSoonTool, Tool } from './tool';
+
+const comingSoon = (tool: Omit<ComingSoonTool, 'status'>): ComingSoonTool => ({
+  ...tool,
+  status: 'coming-soon',
+});
 
 export const tools: Tool[] = [
   {
     id: 'salary-slip',
     name: 'Driver Salary Slip',
     description:
-      'Generate month-end wage receipts with vehicle number logs, overtime tallies, and clean signature slots for HRA and IT Act claiming.',
+      'Prepare a driver salary receipt with payment details, vehicle number, optional declaration, and signature.',
     category: 'disbursement-voucher',
     format: 'A4 · SLIP',
     icon: 'car',
     order: 1,
-    status: 'coming-soon',
+    status: 'live',
+    href: '/driver-salary-slip',
   },
-  {
+  comingSoon({
     id: 'petrol-receipt',
     name: 'Petrol & Fuel Receipt',
     description:
@@ -21,9 +27,8 @@ export const tools: Tool[] = [
     format: '80MM THERMAL',
     icon: 'fuel',
     order: 2,
-    status: 'coming-soon',
-  },
-  {
+  }),
+  comingSoon({
     id: 'rent-receipt',
     name: 'House Rent Receipt',
     description:
@@ -32,6 +37,5 @@ export const tools: Tool[] = [
     format: '3-PER-PAGE A4',
     icon: 'home',
     order: 3,
-    status: 'coming-soon',
-  },
+  }),
 ];

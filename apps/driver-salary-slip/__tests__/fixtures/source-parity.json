@@ -1,0 +1,92 @@
+{
+  "sourceRevision": "85412e6",
+  "capturedOn": "2026-11-10",
+  "defaults": {
+    "template": "1",
+    "driverSalutation": "Mr.",
+    "payerSalutation": "Mr.",
+    "driverName": "",
+    "payerName": "",
+    "vehicleNumber": "",
+    "currencyIndex": 68,
+    "paymentDate": "today",
+    "salaryAmount": 0,
+    "salaryMonth": "current month",
+    "stampEnabled": true,
+    "signatureTransform": { "x": 0, "y": 0, "rotation": 0, "scale": 1 }
+  },
+  "currency": {
+    "count": 165,
+    "default": { "index": 68, "text": "Indian Rupee - ₹", "value": "₹" },
+    "identity": "source array index; duplicate symbols remain distinct"
+  },
+  "declaration": "I also declare that the driver is exclusively utilized for official purpose only. Please reimburse the above amount. I further declare that what is stated above is correct and true.",
+  "signatureTransformRanges": {
+    "x": [-100, 100, 1],
+    "y": [-100, 100, 1],
+    "rotation": [-45, 45, 1],
+    "scale": [0.5, 2, 0.05]
+  },
+  "persistence": {
+    "sourceKey": "driver_slip_form_data",
+    "version": 1,
+    "paymentDate": "day-of-month restored into current month and year",
+    "salaryMonth": "current month on restore",
+    "imageStringLimit": 204800
+  },
+  "syntheticReceipt": {
+    "driverSalutation": "Mrs.",
+    "driverName": "Asha Example",
+    "payerSalutation": "Mr.",
+    "payerName": "Morgan Sample",
+    "vehicleNumber": "KA03AB1234",
+    "paymentDate": "2026-11-10",
+    "salaryMonth": "October",
+    "salaryAmount": 12500.5,
+    "currencyIndex": 68
+  },
+  "templates": [
+    {
+      "id": "1",
+      "title": "Driver Salary Receipt",
+      "sections": ["payer declaration", "Receipt Acknowledgement"],
+      "sourceText": [
+        "This is to certify that I have paid",
+        "Acknowledged receipt enclosed",
+        "Date of Receipt:",
+        "Received a sum of",
+        "Revenue Stamp",
+        "Signature"
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Driver Salary Receipt",
+      "sections": ["payment summary and payer declaration", "Receipt Acknowledgement"],
+      "sourceText": [
+        "Vehicle Number:",
+        "Salary of the Month:",
+        "Amount Paid:",
+        "Received from",
+        "Receipt Acknowledgement",
+        "Driver Name:",
+        "Revenue Stamp",
+        "Signature:"
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Driver Salary Receipt",
+      "sections": ["single certification and declaration"],
+      "sourceText": [
+        "This is to certify that",
+        "Vehicle Number:",
+        "Date:",
+        "Driver Name:",
+        "Employee Name:",
+        "Revenue Stamp",
+        "Driver Signature:"
+      ]
+    }
+  ]
+}

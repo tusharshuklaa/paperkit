@@ -1,4 +1,16 @@
-export type Tool = {
+import type { Prettify } from '@repo/utils/types/global';
+
+type LiveStatus = {
+  status: 'live';
+  href: string;
+};
+
+type ComingSoonStatus = {
+  status: 'coming-soon';
+  href?: never;
+};
+
+type ToolCore = {
   id: string;
   name: string;
   description: string;
@@ -6,4 +18,7 @@ export type Tool = {
   format: string;
   icon: 'car' | 'fuel' | 'home';
   order: number;
-} & ({ status: 'live'; href: string } | { status: 'coming-soon'; href?: never });
+};
+
+export type Tool = Prettify<ToolCore & (LiveStatus | ComingSoonStatus)>;
+export type ComingSoonTool = Extract<Tool, { status: 'coming-soon' }>;

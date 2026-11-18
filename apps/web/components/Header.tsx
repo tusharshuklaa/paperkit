@@ -1,5 +1,5 @@
+import { ThemeControl } from '@repo/platform-shell/ThemeControl';
 import { FileText } from 'lucide-react';
-import { ThemeControl } from './ThemeControl';
 
 export function Header() {
   return (

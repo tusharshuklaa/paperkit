@@ -2,7 +2,7 @@
 
 Status: resolved. User selected Paper Index with Print Room's Good on paper stack.
 This document records exploration history, not current design authority.
-See [final implementation](landing-redesign.md) and [design authority](../../reference/paperkit/DESIGN.md).
+See [final implementation](landing-redesign.md) and [design authority](../../apps/web/DESIGN.md).
 
 ## Confirmed Brief
 
@@ -94,9 +94,9 @@ No branch or commit created.
 ## Promotion and Documentation
 
 After user selection, promote the chosen direction into production components, remove
-the comparison mechanism, and reconcile reference/paperkit/DESIGN.md, DESIGN_TOKENS.md,
+the comparison mechanism, and reconcile the design system, token inventory,
 shared-styles.css, component contracts, and shell verification docs.
-Write app DESIGN.md and .impeccable/design.json from the shipped result, not these experiments.
+Update app DESIGN.md and .impeccable/design.json from the shipped result, not these experiments.
 Selection is complete. Shared design authority and tokens now describe the finalized design.
 
 ## Verification

@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "@repo/driver-salary-slip": "workspace:*",
+    "@repo/platform-shell": "workspace:*",
     "@repo/tool-registry": "workspace:*",
     "@repo/document-engine": "workspace:*",
     "lucide-react": "^0.468.0",
