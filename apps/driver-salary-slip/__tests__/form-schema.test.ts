@@ -27,7 +27,7 @@ describe('salary slip form schema', () => {
       driverSalutation: fixture.defaults.driverSalutation,
       payerSalutation: fixture.defaults.payerSalutation,
       currencyId: `currency-${fixture.defaults.currencyIndex}`,
-      salaryAmount: 0,
+      salaryAmount: Number.NaN,
       salaryMonth: 'November',
       declaration: fixture.declaration,
       stampEnabled: true,
@@ -36,8 +36,8 @@ describe('salary slip form schema', () => {
     expect(defaults.paymentDate).toEqual(new Date(2026, 10, 10));
   });
 
-  it('accepts zero and decimal amounts with dates from 1900 through future dates', () => {
-    expect(formSchema.safeParse({ ...validValues(), salaryAmount: 0 }).success).toBe(true);
+  it('accepts positive decimal amounts with dates from 1900 through future dates', () => {
+    expect(formSchema.safeParse({ ...validValues(), salaryAmount: 0 }).success).toBe(false);
     expect(formSchema.safeParse({ ...validValues(), salaryAmount: 12500.5 }).success).toBe(true);
     expect(formSchema.safeParse({ ...validValues(), salaryAmount: '12500.5' }).success).toBe(true);
     expect(

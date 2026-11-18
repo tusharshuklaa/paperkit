@@ -7,7 +7,7 @@ test('ships the live driver tool and two Coming Soon tools', () => {
       id: 'salary-slip',
       name: 'Driver Salary Slip',
       description:
-        'Generate month-end wage receipts with vehicle number logs, overtime tallies, and clean signature slots for HRA and IT Act claiming.',
+        'Prepare a driver salary receipt with payment details, vehicle number, optional declaration, and signature.',
       category: 'disbursement-voucher',
       format: 'A4 · SLIP',
       icon: 'car',
