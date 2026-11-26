@@ -56,7 +56,7 @@ test('blur validation stays quiet until interaction and corrections clear errors
   await expect(page.locator('dialog[open]')).toHaveCount(0);
   await date.fill('2026-11-13');
   await expect(date).not.toHaveAttribute('aria-invalid', 'true');
-  await expect(page.getByText('Receipt ready to print', { exact: true })).toBeVisible();
+  await expect(page.getByText('Receipt ready', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Print receipt', exact: true }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   expect(dateWarnings).toEqual([]);
@@ -88,11 +88,16 @@ test('shared dropdowns reserve chevron space and signature positioning stays opt
   await page.keyboard.press('Tab');
   await expect(page.getByLabel('Driver salutation', { exact: true })).toHaveValue('Mrs.');
   await expect(page.getByLabel('Driver name', { exact: true })).toBeFocused();
-  await page.getByLabel('Driver name', { exact: true }).fill('Asha Example');
-  await expect(page.locator('#signature-x')).toBeHidden();
-  const summary = page.locator('.signature-adjustments summary');
+  const adjustments = page.locator('.signature-adjustments');
+  const summary = adjustments.locator('summary');
+  await expect(summary).toHaveText('Adjust signature position');
+  await expect(summary).toBeVisible();
+  await expect(adjustments).not.toHaveAttribute('open', '');
   await summary.focus();
   await page.keyboard.press('Enter');
+  await expect(adjustments.getByText('No driver signature yet.')).toBeVisible();
+  await expect(page.locator('#signature-x')).toBeHidden();
+  await page.getByLabel('Driver name', { exact: true }).fill('Asha Example');
   await expect(page.locator('#signature-x')).toBeVisible();
   await page.locator('#signature-x').fill('25');
   await expect(page.getByRole('img', { name: 'Driver signature', exact: true })).toHaveAttribute(
@@ -101,16 +106,61 @@ test('shared dropdowns reserve chevron space and signature positioning stays opt
   );
 });
 
-test('tablet template labels stay within their controls', async ({ page }) => {
+test('template controls align with the receipt and stay usable across widths', async ({ page }) => {
   await page.goto('/');
-  for (const width of [768, 1024, 1100]) {
+  const preview = page.getByRole('region', { name: 'Receipt preview' });
+  const templates = preview.getByRole('group', { name: 'Receipt template' });
+  const form = page.locator('.form-panel');
+  await expect(templates.getByRole('radio')).toHaveCount(3);
+  await expect(form.getByRole('radio')).toHaveCount(0);
+  const silhouettes = templates.locator('svg[aria-hidden="true"]');
+  await expect(silhouettes).toHaveCount(3);
+  expect(
+    new Set(await silhouettes.evaluateAll((sheets) => sheets.map((sheet) => sheet.innerHTML))).size,
+  ).toBe(3);
+
+  for (const width of [320, 390, 768, 900, 1024, 1100, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
-    const overflow = await page
-      .locator('.template-option__copy strong')
+    expect(
+      await silhouettes.evaluateAll((sheets) =>
+        sheets.every((sheet) => {
+          const title = sheet.parentElement?.querySelector('strong')?.getBoundingClientRect();
+          const detail = sheet.parentElement?.querySelector('small')?.getBoundingClientRect();
+          const paper = sheet.querySelector('rect')?.getBoundingClientRect();
+          if (!title || !detail || !paper) return false;
+          return (
+            paper.height > 0 &&
+            paper.top >= title.top - 1 &&
+            paper.bottom <= detail.bottom + 1 &&
+            paper.left >= Math.max(title.right, detail.right)
+          );
+        }),
+      ),
+    ).toBe(true);
+    const overflow = await templates
+      .locator('.template-option__copy > :is(strong, small)')
       .evaluateAll((labels) => labels.some((label) => label.scrollWidth > label.clientWidth));
     expect(overflow).toBe(false);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+    const heading = await preview.getByRole('heading', { name: 'Receipt preview' }).boundingBox();
+    const paper = await preview.getByRole('article').boundingBox();
+    const formBox = await form.boundingBox();
+    if (!heading || !paper || !formBox) throw new Error('Preview geometry unavailable.');
+    expect(heading.x).toBeCloseTo(paper.x, 0);
+    expect(heading.width).toBeCloseTo(paper.width, 0);
+    expect(paper.height).toBeCloseTo(paper.width * (297 / 210), 0);
+    expect(paper.width).toBeGreaterThanOrEqual(formBox.width - 1);
+    if (width > 1000) {
+      const formHeading = await page.getByText('Driver and payer', { exact: true }).boundingBox();
+      expect(heading.y).toBeCloseTo(formHeading?.y ?? Number.NaN, 0);
+      expect(heading.height).toBeCloseTo(formHeading?.height ?? Number.NaN, 0);
+    }
   }
+
+  await templates.getByRole('radio', { name: /Split receipt/ }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(templates.getByRole('radio', { name: /Summary/ })).toBeChecked();
+  await expect(preview.getByRole('article', { name: /template 2/ })).toBeVisible();
 });
 
 test('Plum & Stone tokens follow the tool theme and keep receipts white', async ({
@@ -172,7 +222,7 @@ test('defaults, required validation, three templates, and signature presentation
   await page.getByLabel('Driver name').fill('Asha Example');
   await page.getByLabel('Payer name').fill('Morgan Sample');
   await page.getByLabel('Vehicle number').fill('KA03AB1234');
-  await expect(page.getByText('Receipt ready to print')).toBeVisible();
+  await expect(page.getByText('Receipt ready', { exact: true })).toBeVisible();
   await page.getByLabel('Vehicle number').clear();
   await expect(page.getByText('Complete required fields to prepare receipt.')).toBeVisible();
   await page.getByLabel('Vehicle number').fill('KA03AB1234');
@@ -362,10 +412,13 @@ test('mobile layout keeps form first without horizontal overflow and print emits
 
   await page.emulateMedia({ media: 'print' });
   await expect(page.locator('.form-panel')).toBeHidden();
+  await expect(page.locator('.preview-heading')).toBeHidden();
   await expect(page.locator('.receipt-paper')).toBeVisible();
   await expect(page.locator('.receipt-paper')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.receipt-paper')).toHaveCSS('aspect-ratio', 'auto');
+  await expect(page.locator('.receipt-paper')).toHaveCSS('zoom', '1');
   const pdfPath = testInfo.outputPath('driver-salary-receipt.pdf');
-  const pdf = await page.pdf({ format: 'A4', path: pdfPath, printBackground: true });
+  const pdf = await page.pdf({ preferCSSPageSize: true, path: pdfPath, printBackground: true });
   expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
   expect(pdf.byteLength).toBeGreaterThan(2000);
 });

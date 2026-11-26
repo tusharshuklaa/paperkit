@@ -85,10 +85,12 @@ export function ReceiptTemplate2({ data }: ReceiptTemplate2Props) {
           </strong>{' '}
           towards salary of the month of <strong>{data.salaryMonth}</strong>.
         </p>
-        <div className="receipt-driver-signoff">
-          <strong>Driver Name: {data.driverName}</strong>
+        <div className="receipt-signoff-group">
+          <div className="receipt-driver-signoff">
+            <strong>Driver Name: {data.driverName}</strong>
+          </div>
+          <ReceiptFooter data={data} />
         </div>
-        <ReceiptFooter data={data} />
       </section>
     </div>
   );
