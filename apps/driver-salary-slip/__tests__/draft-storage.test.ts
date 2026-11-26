@@ -37,6 +37,7 @@ function mockStorage(initial: Record<string, string> = {}): Storage {
 function validDraft(now: Date = new Date()) {
   return {
     ...createDefaultValues(now),
+    salaryAmount: 12500,
     driverName: 'Asha Example',
     payerName: 'Morgan Sample',
     vehicleNumber: 'KA03AB1234',

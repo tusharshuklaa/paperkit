@@ -57,6 +57,9 @@ export function SalarySlipForm({
   onClearSaved,
 }: SalarySlipFormProps) {
   const [signatureError, setSignatureError] = useState('');
+  const [currencySearch, setCurrencySearch] = useState(
+    currencyOptions.find(({ id }) => id === form.getValues('currencyId'))?.label ?? '',
+  );
   const values = useWatch({ control: form.control }) as FormValues;
   const signature = values.uploadedSignature;
   const hasSignature = Boolean(values.driverName.trim() || signature);
@@ -244,20 +247,25 @@ export function SalarySlipForm({
             <label className="field-label" htmlFor="currency">
               Currency
             </label>
-            <Select
+            <Input
               aria-invalid={Boolean(fieldError('currencyId'))}
               aria-describedby="currency-error"
               id="currency"
+              list="currency-options"
+              autoComplete="off"
               required
-              value={values.currencyId}
-              {...form.register('currencyId')}
-            >
+              value={currencySearch}
+              onChange={(event) => {
+                setCurrencySearch(event.target.value);
+                const option = currencyOptions.find(({ label }) => label === event.target.value);
+                if (option) form.setValue('currencyId', option.id, { shouldDirty: true });
+              }}
+            />
+            <datalist id="currency-options">
               {currencyOptions.map(({ id, label }) => (
-                <option key={id} value={id}>
-                  {label}
-                </option>
+                <option key={id} value={label} />
               ))}
-            </Select>
+            </datalist>
             <div id="currency-error" aria-live="polite" aria-atomic="true" className="field-error">
               {fieldError('currencyId') ?? ''}
             </div>

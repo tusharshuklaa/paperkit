@@ -28,7 +28,7 @@ const salaryAmountSchema = z.preprocess(
       invalid_type_error: 'Enter a salary amount.',
     })
     .finite('Enter a finite salary amount.')
-    .min(0, 'Salary amount must be zero or more.'),
+    .gt(0, 'Salary amount must be greater than zero.'),
 );
 const numericTransform = <Schema extends z.ZodTypeAny>(schema: Schema) =>
   z.preprocess((value) => {

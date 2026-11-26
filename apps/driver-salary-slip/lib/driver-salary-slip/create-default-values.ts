@@ -13,7 +13,7 @@ export function createDefaultValues(now: Date = new Date()): FormValues {
     paymentDate: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
     currencyId:
       currencyOptions.find(({ label }) => label === 'Indian Rupee - ₹')?.id ?? 'currency-68',
-    salaryAmount: 0,
+    salaryAmount: Number.NaN,
     salaryMonth: new Intl.DateTimeFormat('en', { month: 'long' }).format(
       now,
     ) as FormValues['salaryMonth'],
