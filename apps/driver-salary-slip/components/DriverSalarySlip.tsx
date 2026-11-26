@@ -9,12 +9,34 @@ import { draftStorage } from '@driver/lib/driver-salary-slip/draft-storage';
 import { type FormValues, formSchema } from '@driver/lib/driver-salary-slip/form-schema';
 import { receiptDataFromForm } from '@driver/lib/driver-salary-slip/receipt-data';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { printDocument } from '@repo/document-engine';
 import { useEffect, useRef, useState } from 'react';
-import { type FieldPath, useForm, useWatch } from 'react-hook-form';
+import { type FieldErrors, type FieldPath, useForm, useWatch } from 'react-hook-form';
 
 type DriverSalarySlipProps = {
   initialDate: string;
 };
+
+const templates = [
+  {
+    id: '1',
+    name: 'Split receipt',
+    detail: 'Declaration and acknowledgement',
+    silhouette: 'M6 13h20M6 17h17M6 21h11M2 25h28M9 29h14M6 33h7m6 0h7M6 37h7m6 0h7M20 41h6',
+  },
+  {
+    id: '2',
+    name: 'Summary',
+    detail: 'Payment summary and acknowledgement',
+    silhouette: 'M6 13h7m6 0h7M6 17h7m6 0h7M6 22h20M6 26h11M9 31h14M6 35h7m6 0h7M6 39h13M20 42h6',
+  },
+  {
+    id: '3',
+    name: 'Certification',
+    detail: 'Compact single statement',
+    silhouette: 'M6 13h20M6 17h20M6 21h12M6 26h7m6 0h7M6 30h7m6 0h7M20 35h6',
+  },
+] as const;
 
 export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
   const form = useForm<FormValues>({
@@ -22,10 +44,11 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
     defaultValues: createDefaultValues(new Date(`${initialDate}T00:00:00`)),
     mode: 'onTouched',
   });
-  const [printMessage, setPrintMessage] = useState('');
+  const [outputMessage, setOutputMessage] = useState('');
   const [printDialogOpen, setPrintDialogOpen] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
-  const printingRef = useRef(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const outputInProgress = useRef(false);
   const values = useWatch({ control: form.control }) as FormValues;
   const signatureImage = useSignatureImage(values.driverName, values.uploadedSignature);
   const receiptData = receiptDataFromForm(values, signatureImage);
@@ -44,81 +67,84 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
     form.setValue('salaryMonth', defaults.salaryMonth);
   }, [form]);
 
-  useEffect(() => {
-    const finishPrint = () => {
-      printingRef.current = false;
-      setIsPrinting(false);
-    };
-    window.addEventListener('afterprint', finishPrint);
-    return () => window.removeEventListener('afterprint', finishPrint);
-  }, []);
-
   const printReceipt = () => {
-    if (printingRef.current) return;
-    printingRef.current = true;
+    if (outputInProgress.current) return;
+    outputInProgress.current = true;
     setIsPrinting(true);
     setPrintDialogOpen(false);
-    requestAnimationFrame(() => {
-      void (async () => {
-        await document.fonts.ready;
-        await Promise.all(
-          Array.from(document.images, (image) => image.decode().catch(() => undefined)),
-        );
-        await new Promise<void>((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-        );
-        try {
-          window.print();
-        } finally {
-          printingRef.current = false;
-          setIsPrinting(false);
-        }
-      })();
-    });
+    void printDocument()
+      .catch(() => setOutputMessage('Could not open the print dialog. Try again.'))
+      .finally(() => {
+        outputInProgress.current = false;
+        setIsPrinting(false);
+      });
   };
 
-  const handlePrintRequest = form.handleSubmit(
-    () => {
-      setPrintMessage('');
-      setPrintDialogOpen(true);
-    },
-    (errors) => {
-      const firstInvalidField = Object.keys(errors)[0] as FieldPath<FormValues> | undefined;
-      const firstError = firstInvalidField ? errors[firstInvalidField]?.message : undefined;
-      const fieldLabel = firstInvalidField
-        ? firstInvalidField.replace(/[A-Z]/g, (letter) => ` ${letter.toLowerCase()}`)
-        : '';
-      setPrintMessage(
-        firstError && fieldLabel
-          ? `${fieldLabel}: ${firstError}`
-          : 'Complete required receipt details before printing.',
+  const showInvalidReceipt = (errors: FieldErrors<FormValues>) => {
+    const firstInvalidField = Object.keys(errors)[0] as FieldPath<FormValues> | undefined;
+    const firstError = firstInvalidField ? errors[firstInvalidField]?.message : undefined;
+    const fieldLabel = firstInvalidField
+      ? firstInvalidField.replace(/[A-Z]/g, (letter) => ` ${letter.toLowerCase()}`)
+      : '';
+    setOutputMessage(
+      firstError && fieldLabel
+        ? `${fieldLabel}: ${firstError}`
+        : 'Complete the required receipt details first.',
+    );
+    if (firstInvalidField) form.setFocus(firstInvalidField);
+  };
+
+  const handlePrintRequest = form.handleSubmit(() => {
+    if (outputInProgress.current) return;
+    setOutputMessage('');
+    setPrintDialogOpen(true);
+  }, showInvalidReceipt);
+
+  const handleDownloadRequest = form.handleSubmit(async (validated) => {
+    if (outputInProgress.current) return;
+    outputInProgress.current = true;
+    setIsDownloading(true);
+    setOutputMessage('Preparing PDF...');
+    try {
+      const { downloadSalaryReceipt } = await import(
+        '@driver/lib/driver-salary-slip/download-salary-receipt'
       );
-      if (firstInvalidField) form.setFocus(firstInvalidField);
-    },
-  );
+      const result = await downloadSalaryReceipt(validated);
+      setOutputMessage(
+        result === 'unsupported-text'
+          ? 'The PDF cannot display some receipt characters. Use Print receipt instead.'
+          : 'PDF download started.',
+      );
+    } catch {
+      setOutputMessage('Could not download the PDF. Try again or use Print receipt.');
+    } finally {
+      outputInProgress.current = false;
+      setIsDownloading(false);
+    }
+  }, showInvalidReceipt);
 
   const handleSaveAndPrint = () => {
     const result = draftStorage.save(form.getValues());
     if (result.saved && result.imageSkipped) {
-      setPrintMessage(
+      setOutputMessage(
         'Details saved. Uploaded signature exceeded the 204800-character limit and was not retained.',
       );
     } else if (result.saved) {
-      setPrintMessage('Details saved in this browser.');
+      setOutputMessage('Details saved in this browser.');
     } else {
-      setPrintMessage('Details could not be saved in this browser. The receipt will still print.');
+      setOutputMessage('Details could not be saved in this browser. The receipt will still print.');
     }
     printReceipt();
   };
 
   const handleJustPrint = () => {
-    setPrintMessage('Details were not saved.');
+    setOutputMessage('Details were not saved.');
     printReceipt();
   };
 
   const handleClearSaved = () => {
     if (!window.confirm('Clear saved salary slip details from this browser?')) return;
-    setPrintMessage(
+    setOutputMessage(
       draftStorage.clear()
         ? 'Saved salary slip data cleared.'
         : 'Saved data could not be cleared in this browser.',
@@ -127,7 +153,7 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
 
   const handleReset = () => {
     form.reset(createDefaultValues());
-    setPrintMessage('');
+    setOutputMessage('');
   };
 
   return (
@@ -135,30 +161,60 @@ export function DriverSalarySlip({ initialDate }: DriverSalarySlipProps) {
       <h1 className="tool-title">Driver Salary Slip</h1>
       <div className="workspace">
         <section aria-labelledby="form-title" className="form-panel">
-          <div className="section-heading">
-            <h2 id="form-title">Receipt details</h2>
-            <p>Enter the driver, payer, vehicle and salary payment details.</p>
-            <p className="section-heading__note">Declaration and signature image are optional.</p>
-          </div>
           <SalarySlipForm
             form={form}
+            isDownloading={isDownloading}
+            outputPending={isPrinting || isDownloading}
+            outputMessage={outputMessage}
             onRequestPrint={handlePrintRequest}
+            onRequestDownload={handleDownloadRequest}
             onReset={handleReset}
             onClearSaved={handleClearSaved}
           />
         </section>
         <section aria-labelledby="preview-title" className="preview-panel">
           <div className="preview-heading">
-            <div>
-              <p className="eyebrow">Live document</p>
-              <h2 id="preview-title">Receipt preview</h2>
-            </div>
-            <span>Template {values.template} of 3</span>
+            <h2 id="preview-title">Receipt preview</h2>
+            <fieldset className="preview-template">
+              <legend className="field-label hidden">Receipt template</legend>
+              <div className="template-options">
+                {templates.map((template) => (
+                  <label className="template-option" key={template.id}>
+                    <input
+                      checked={values.template === template.id}
+                      form="salary-slip-form"
+                      type="radio"
+                      value={template.id}
+                      {...form.register('template')}
+                    />
+                    <span className="template-option__copy">
+                      <strong>{template.name}</strong>
+                      <small>{template.detail}</small>
+                      <svg
+                        aria-hidden="true"
+                        className="template-option__sheet"
+                        focusable="false"
+                        viewBox="0 0 32 46"
+                        preserveAspectRatio="xMaxYMid meet"
+                      >
+                        <rect
+                          className="template-option__page"
+                          x="1"
+                          y="1"
+                          width="30"
+                          height="44"
+                          rx="2"
+                        />
+                        <path d="M6 7h15" strokeWidth="2" />
+                        <path d={template.silhouette} />
+                      </svg>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
           </div>
           <ReceiptPreview data={receiptData} />
-          <p aria-live="polite" className="print-message">
-            {printMessage}
-          </p>
         </section>
       </div>
       <PrintDialog

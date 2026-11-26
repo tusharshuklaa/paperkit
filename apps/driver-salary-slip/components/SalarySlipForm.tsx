@@ -7,23 +7,21 @@ import { Button } from '@repo/ui/Button';
 import { FieldWrapper } from '@repo/ui/FieldWrapper';
 import { Input } from '@repo/ui/Input';
 import { Select } from '@repo/ui/Select';
-import { CheckCircle2, ChevronDown, Printer, RotateCcw, Upload, X } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Download, Printer, RotateCcw, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { useController, useWatch } from 'react-hook-form';
 
 type SalarySlipFormProps = {
   form: UseFormReturn<FormValues>;
+  isDownloading: boolean;
+  outputPending: boolean;
+  outputMessage: string;
   onRequestPrint: () => void;
+  onRequestDownload: () => void;
   onReset: () => void;
   onClearSaved: () => void;
 };
-
-const templates = [
-  { id: '1', name: 'Split receipt', detail: 'Declaration and acknowledgement' },
-  { id: '2', name: 'Summary', detail: 'Payment summary and acknowledgement' },
-  { id: '3', name: 'Certification', detail: 'Compact single statement' },
-] as const;
 
 const months = [
   'January',
@@ -50,7 +48,11 @@ function dateInputValue(date: Date): string {
 
 export function SalarySlipForm({
   form,
+  isDownloading,
+  outputPending,
+  outputMessage,
   onRequestPrint,
+  onRequestDownload,
   onReset,
   onClearSaved,
 }: SalarySlipFormProps) {
@@ -60,8 +62,8 @@ export function SalarySlipForm({
   );
   const values = useWatch({ control: form.control }) as FormValues;
   const signature = values.uploadedSignature;
-  const driverName = values.driverName;
-  const isReadyToPrint = formSchema.safeParse(values).success;
+  const hasSignature = Boolean(values.driverName.trim() || signature);
+  const isReceiptReady = formSchema.safeParse(values).success;
   const { errors } = form.formState;
   const fieldError = (name: keyof FormValues) => errors[name]?.message?.toString();
   const { field: paymentDateField } = useController({
@@ -85,6 +87,7 @@ export function SalarySlipForm({
   return (
     <form
       className="salary-form"
+      id="salary-slip-form"
       noValidate
       onSubmit={(event) => {
         event.preventDefault();
@@ -271,28 +274,6 @@ export function SalarySlipForm({
       </fieldset>
 
       <fieldset className="form-section">
-        <legend>Receipt template</legend>
-        <div className="template-options">
-          {templates.map((template) => (
-            <label className="template-option" key={template.id}>
-              <input
-                checked={values.template === template.id}
-                type="radio"
-                value={template.id}
-                {...form.register('template')}
-                onChange={() => form.setValue('template', template.id, { shouldDirty: true })}
-              />
-              <span className="template-option__number">0{template.id}</span>
-              <span className="template-option__copy">
-                <strong>{template.name}</strong>
-                <small>{template.detail}</small>
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset className="form-section">
         <legend>Declaration and images</legend>
         <label className="field-stack" htmlFor="declaration">
           <span className="field-label">
@@ -360,12 +341,12 @@ export function SalarySlipForm({
           <p aria-live="polite" className="field-error signature-error">
             {signatureError}
           </p>
-          {driverName.trim() || signature ? (
-            <details className="signature-adjustments">
-              <summary>
-                Signature position
-                <ChevronDown aria-hidden="true" />
-              </summary>
+          <details className="signature-adjustments">
+            <summary>
+              Adjust signature position
+              <ChevronDown aria-hidden="true" />
+            </summary>
+            <div hidden={!hasSignature}>
               <div className="adjustment-list">
                 <label className="range-row" htmlFor="signature-x">
                   <span>Horizontal</span>
@@ -452,35 +433,62 @@ export function SalarySlipForm({
               >
                 <RotateCcw aria-hidden="true" /> Reset signature position
               </Button>
-            </details>
-          ) : null}
+            </div>
+            {!hasSignature && <p className="field-hint">No driver signature yet.</p>}
+          </details>
         </div>
       </fieldset>
 
       <div className="form-actions">
-        <Button type="submit">
+        <Button type="submit" disabled={outputPending}>
           <Printer aria-hidden="true" /> Print receipt
         </Button>
-        <Button type="button" variant="outline" onClick={onReset}>
-          <RotateCcw aria-hidden="true" /> Reset form
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={outputPending}
+          aria-busy={isDownloading}
+          onClick={onRequestDownload}
+        >
+          <Download aria-hidden="true" /> Download PDF
         </Button>
-        <Button type="button" variant="outline" onClick={onClearSaved}>
-          <X aria-hidden="true" /> Clear saved data
+        <Button
+          type="button"
+          variant="outline"
+          className="icon-button"
+          aria-label="Reset form"
+          title="Reset form"
+          onClick={onReset}
+        >
+          <RotateCcw aria-hidden="true" />
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="icon-button"
+          aria-label="Clear saved data"
+          title="Clear saved data"
+          onClick={onClearSaved}
+        >
+          <X aria-hidden="true" />
         </Button>
       </div>
       <output
         aria-live="polite"
-        className={`receipt-status${isReadyToPrint ? ' receipt-status--ready' : ''}`}
+        className={`receipt-status${isReceiptReady ? ' receipt-status--ready' : ''}`}
       >
-        {isReadyToPrint ? (
+        {isReceiptReady ? (
           <>
             <CheckCircle2 aria-hidden="true" className="receipt-status__icon" />
-            Receipt ready to print
+            Receipt ready
           </>
         ) : (
           'Complete required fields to prepare receipt.'
         )}
       </output>
+      <p aria-live="polite" aria-atomic="true" className="receipt-output-message">
+        {outputMessage}
+      </p>
       <p className="privacy-note">
         Nothing is saved automatically. Save &amp; Print can retain these details and an uploaded
         signature in this browser.

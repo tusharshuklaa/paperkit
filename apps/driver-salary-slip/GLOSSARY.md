@@ -15,6 +15,9 @@ _Avoid_: Employer, employee name
 A document acknowledging payment to a driver for a salary month. It does not calculate payroll or establish tax eligibility.
 _Avoid_: Payroll statement, tax certificate
 
+**Receipt Draft**:
+Details the payer explicitly keeps to prepare future Salary Receipts. A printed or downloaded Salary Receipt is not a Receipt Draft.
+
 **Salary Month**:
 The month to which the driver's payment relates, distinct from the date payment was made.
 _Avoid_: Payment date

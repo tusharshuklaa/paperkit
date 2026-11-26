@@ -92,13 +92,14 @@ Deliver a locally usable and production-buildable application without requiring 
 76. As a maintainer, I want a working local URL and passing production build without a hosting prerequisite, so that implementation can be completed before public deployment.
 77. As a maintainer, I want recorded visual, print, and behavior verification, so that completion claims are supported by evidence.
 78. As a maintainer, I want signature-font choice and print limitations documented, so that future changes preserve intentional behavior.
+79. As a payer, I want to download the Salary Receipt as an A4 PDF without opening the print dialog or saving a Receipt Draft.
 
 ## Implementation Decisions
 
 - Follow the accepted separate-app architecture: the Tool is an independent Next.js application; the Platform Shell remains discovery-only. Shared workspace packages are build-time dependencies, not runtime composition or microfrontends.
 - Perform a functional port, not a repository/config copy. Align actual framework, React, TypeScript, Tailwind and dependency versions with current PaperKit configuration and installed-version documentation. Use Bun workspaces, existing Turbo conventions, shared TypeScript configuration, root Biome and public shared UI exports.
 - Reuse existing helpers, platform features and installed dependencies first. Use React Hook Form with one Zod form schema and compatible resolver; add only missing dependencies in their owning workspace. No copied ESLint setup or competing styling/config package.
-- Keep one client form-state owner, shared derived receipt data, three template renderers, signature generation/lifecycle handling, saved-draft operations and print orchestration. Keep browser-specific work app-local; the document-engine package remains a placeholder rather than becoming a generalized PDF/print framework.
+- Keep form state, receipt data and layouts, signature generation, draft storage, and print confirmation app-owned. Use `document-engine` for browser print preparation and direct PDF generation and download. Download validates the same form as print, never saves a Receipt Draft, and never submits receipt data to a server.
 - Use PaperKit's current design authority, tokens, theme and fonts rather than historical shell specifications or source styles. Receipt paper stays white with readable dark text in both app themes. Reuse shared controls and document primitives where contracts fit; do not silently substitute the shared decorative stamp placeholder for the agreed functional Stamp Image.
 - Use Payer for the person paying the Driver and, where applicable, declaring reimbursement. A Salary Receipt records payment; it is not a payroll calculation or tax certificate. Salary Month and Payment Date remain independent concepts. The optional form statement is a Declaration.
 - Preserve source defaults: first template, Mr. for both salutations, empty names/vehicle, INR, today's Payment Date, zero amount, current Salary Month, default Declaration, enabled Stamp Image, and neutral signature transform. Empty required fields prevent printing, not initial rendering or live preview.
