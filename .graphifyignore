@@ -1,0 +1,13 @@
+# Exclude docs: code-only extraction needs no API key
+*.md
+*.hbs
+*.json.hbs
+scripts/
+
+# Tooling and design references are not application source
+.agents/
+.claude/
+.codex/
+.github/
+reference/
+

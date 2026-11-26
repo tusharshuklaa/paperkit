@@ -1,0 +1,19 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "exactOptionalPropertyTypes": true,
+    "lib": ["es2022", "dom"],
+    "types": ["node"],
+    "paths": {
+      "@repo/tool-registry": ["../../../../packages/tool-registry/src/index.ts"],
+      "@repo/document-engine": ["../../../../packages/document-engine/src/index.ts"]
+    }
+  },
+  "include": [
+    "../../lib/*.ts",
+    "../sitemap.ts",
+    "../../../../packages/tool-registry/src/__tests__/tool.test.ts",
+    "package-consumer.ts"
+  ]
+}

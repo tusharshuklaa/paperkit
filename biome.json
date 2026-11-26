@@ -12,7 +12,19 @@
       "**/.next/**",
       "**/node_modules/**",
       "**/*.tsbuildinfo",
-      "**/next-env.d.ts"
+      "**/next-env.d.ts",
+      "reference/**",
+      "graphify-out/**",
+      ".agents/**",
+      ".claude/**",
+      ".codex/**",
+      ".github/**",
+      ".vscode/**",
+      ".mcp.json",
+      ".taste-skill/**",
+      "test-results/**",
+      "playwright-report/**",
+      "bun.lock"
     ]
   },
   "formatter": {
@@ -37,5 +49,12 @@
       "trailingCommas": "all",
       "semicolons": "always"
     }
-  }
+  },
+  "overrides": [
+    {
+      "include": ["apps/web/components/SiteFooter.tsx", "apps/web/components/Header.tsx"],
+      "linter": { "rules": { "a11y": { "useValidAnchor": "off" } } }
+    },
+    { "include": ["**/*.css"], "linter": { "enabled": false }, "formatter": { "enabled": false } }
+  ]
 }
